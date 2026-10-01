@@ -442,10 +442,12 @@ elif menu_option == "2. Demostración":
     elif "05" in demo_step:
         st.markdown("<span class='badge-step'>05 — MAPREDUCE</span> <span class='section-header'>Análisis Histórico: Agregación Batch con MapReduce</span>", unsafe_allow_html=True)
         st.markdown(
-            "**Explicación breve:** Procesamiento batch con MapReduce (Map, Shuffle, Reduce) sobre 160 lecturas históricas consolidando potencia media y energía total (kWh) sobre el delta real de 60 s."
+            "**Explicación breve:** Procesamiento batch con MapReduce (Map, Shuffle, Reduce) sobre 160 lecturas históricas. "
+            "Cada registro representa una ventana de muestreo de 60 s donde su timestamp identifica el inicio de esa ventana "
+            "(10 registros = 10 minutos acumulados como supuesto del dataset)."
         )
         mr_results = execute_mapreduce(df_historical.to_dict(orient="records"))
-        st.info(f"**Lote procesado:** {mr_results['input_records_count']} registros históricos consolidados (intervalo temporal real entre muestras: 60 s / 1 minuto).")
+        st.info(f"**Lote procesado:** {mr_results['input_records_count']} registros históricos consolidados (10 ventanas de muestreo de 60 s = 10 minutos acumulados).")
 
         mr_table = pd.DataFrame(list(mr_results["reduce_results"].values()))
         st.dataframe(
@@ -912,7 +914,8 @@ elif menu_option == "8. MapReduce Histórico":
         st.markdown("##### Etapa REDUCE: Agregación Final")
         st.markdown(
             "Cada *Reducer* computa la potencia media, la temperatura pico y la energía acumulada en kWh "
-            "(utilizando el intervalo real de 60 segundos por muestra periódica del dataset histórico: Horas = (Muestras * 60) / 3600):"
+            "(asumiendo la semántica de ventana de muestreo de 60 s por registro: Horas = (Muestras * 60) / 3600, "
+            "donde cada timestamp identifica el inicio de su ventana; 10 registros = 10 minutos acumulados como supuesto del dataset):"
         )
         mr_df = pd.DataFrame(list(mr_data["reduce_results"].values()))
         st.dataframe(mr_df, use_container_width=True, hide_index=True)

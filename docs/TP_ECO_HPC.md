@@ -142,9 +142,12 @@ Para satisfacer el análisis batch histórico, el sistema incorpora una implemen
    $$\text{Shuffle} \longrightarrow \text{dict}\left[ \text{gpu\_id}, [\text{valor}_1, \text{valor}_2, \dots] \right]$$
 4. **Fase REDUCE:** Función de agregación matemática que reduce la lista de valores a métricas consolidadas:
    $$\text{AvgPower} = \frac{\sum \text{power\_w}}{N}, \quad \text{MaxTemp} = \max(\text{temperature}), \quad \text{Energía (kWh)} = \frac{\text{AvgPower} \times \text{Horas}}{1000}$$
-   Donde $\text{Horas} = \frac{N \times \Delta t}{3600}$, siendo $\Delta t = 60\text{ s}$ el intervalo temporal real representado por las marcas de tiempo consecutivas del dataset histórico.
+   Donde $\text{Horas} = \frac{N \times \Delta t}{3600}$, siendo $\Delta t = 60\text{ s}$ la ventana de muestreo asumida para cada registro como supuesto del dataset.
 
-> **Aclaración Académica:** Mientras que el escenario conceptual de streaming para el agente considera 1 lectura/segundo para baja latencia, el dataset histórico del prototipo representa muestras periódicas consolidadas cada 60 segundos (1 minuto), tal como se verifica en sus marcas de tiempo ISO. El cálculo de energía en MapReduce utiliza estrictamente este intervalo real de 60 segundos por muestra del dataset. La demostración representa fielmente la semántica algorítmica del paradigma MapReduce en memoria local; no constituye un clúster físico Hadoop/Spark en producción.
+> **Aclaración Académica:** Debe distinguirse conceptualmente:
+> - **Streaming conceptual:** 1 lectura/segundo por GPU para el bucle reactivo de baja latencia del agente.
+> - **Dataset batch del prototipo:** Registros discretos con una ventana de muestreo fija de 60 segundos donde cada timestamp identifica el inicio de esa ventana (por ejemplo: `12:00` representa la ventana `12:00–12:01`, `12:01` la ventana `12:01–12:02`, ..., y `12:09` la ventana `12:09–12:10`).
+> - **Cálculo en MapReduce:** Cada registro aporta una ventana de 60 segundos al cálculo didáctico de energía. Por lo tanto, 10 registros representan 10 ventanas de 60 segundos = 10 minutos acumulados ($10 \times 60\text{ s} = 600\text{ s} = 0{,}1667\text{ h}$), aunque la diferencia cronológica entre el primer y último timestamp sea de 9 minutos. Esta semántica se define metodológicamente como un **Supuesto del Dataset / Supuesto Calculado del Prototipo** y no como una medición física continua. La demostración implementa fielmente el paradigma algorítmico en Python local sin constituir un clúster físico Hadoop/Spark.
 
 ### 6.3. Justificación de Arquitectura NoSQL para Producción a Escala
 ¿Por qué una implementación real con 1.024 GPUs requiere almacenamiento **NoSQL** en lugar de una base de datos relacional (RDBMS)?

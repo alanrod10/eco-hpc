@@ -37,7 +37,7 @@ Para garantizar máximo rigor metodológico y transparencia técnica:
 | **Agente Supervisor** | **REALMENTE IMPLEMENTADO** | Implementado en Python (`agent.py`) con memoria histórica y acumuladores. |
 | **Motor de Reglas** | **REALMENTE IMPLEMENTADO** | Implementado en `rules.py` con umbrales configurables de simulación (85 °C de protección). |
 | **Control de Calidad** | **REALMENTE IMPLEMENTADO** | Implementado en `data_quality.py` (filtro de veracidad física). |
-| **Demostración MapReduce**| **REALMENTE IMPLEMENTADO** | Implementado en Python puro (`mapreduce_demo.py`) con cálculo sobre el delta real de 60s. |
+| **Demostración MapReduce**| **REALMENTE IMPLEMENTADO** | Implementado en Python puro (`mapreduce_demo.py`) asumiendo ventanas de muestreo de 60s por registro (10 registros = 10 minutos). |
 | **Interfaz Web** | **REALMENTE IMPLEMENTADA** | Dashboard interactivo en Streamlit (`app.py`) con 12 vistas y Demostración en 5 pasos. |
 | **Suite de Pruebas** | **REALMENTE IMPLEMENTADA** | 24 pruebas automatizadas con Pytest (unitarias, integración y negativas). |
 | **Hardware de GPUs** | **SIMULADO** | 16 GPUs simuladas (`GPU-01` a `GPU-16`) en 4 nodos. No posee H100 físicas ni actúa sobre silicio real. |

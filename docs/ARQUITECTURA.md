@@ -88,7 +88,7 @@ El prototipo funcional opera mediante una canalización lineal determinista de d
    - Mantiene el historial de intervenciones y acumula el ahorro energético proyectado en kWh simulados.
 5. **`mapreduce_demo.py` (Motor de Análisis Batch):**
    - Implementa algorítmicamente en Python puro las etapas de `map_function`, `shuffle_function` y `reduce_function`.
-   - Calcula métricas consolidadas (promedio de potencia, temperatura máxima y energía total en kWh) utilizando el intervalo temporal real de 60 segundos entre muestras sucesivas del dataset histórico.
+   - Calcula métricas consolidadas (promedio de potencia, temperatura máxima y energía total en kWh) asumiendo una ventana de muestreo fija de 60 segundos por registro, donde cada timestamp identifica el inicio de su intervalo (ej. 10 registros representan 10 ventanas = 10 minutos acumulados como supuesto del dataset).
 6. **`app.py` (Interfaz de Usuario Streamlit):**
    - Presenta el sistema en 12 vistas estructuradas con navegación lateral.
    - Incluye la **Demostración interactiva en 5 pasos** para la inspección y explicación en vivo del sistema.

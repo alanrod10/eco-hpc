@@ -79,7 +79,7 @@ La pantalla **DEMOSTRACIÓN** contiene una secuencia interactiva estructurada en
 | **02** | **02 — AHORRO** | GPU-04: 58,0 °C, 380 W, 14% util | Estado: **AHORRO**<br>Decisión: **REDUCIR FRECUENCIA** | La GPU disipa 380 W pero su uso es de solo 14%. El agente detecta ineficiencia y modula reloj por DVFS para ahorrar ~152 W. |
 | **03** | **03 — PROTECCIÓN** | GPU-07: 89,0 °C, 720 W, 97% util | Estado: **PROTECCIÓN**<br>Decisión: **PROTEGER HARDWARE** | La temperatura supera el umbral configurado (85 °C en la simulación). El agente aplica DVFS restrictivo, refrigeración al 100% y power-capping. |
 | **04** | **04 — ANOMALÍA** | GPU-12: 150,0 °C, 10 W, 0% util | Estado: **DATOS NO CONFIABLES**<br>Decisión: **REVISAR SENSOR** | Inconsistencia física imposible (150 °C sin consumo). Una percepción no es una orden: el agente no apaga el nodo a ciegas y aísla el dato. |
-| **05** | **05 — MAPREDUCE** | Lote de 160 registros consolidados | Agregación Map-Shuffle-Reduce | Muestra la V de Velocidad: batch diferido con MapReduce calculando energía acumulada real por muestra periódica de 60 segundos. |
+| **05** | **05 — MAPREDUCE** | Lote de 160 registros consolidados | Agregación Map-Shuffle-Reduce | Muestra la V de Velocidad: batch diferido con MapReduce calculando energía asumiendo ventanas de 60 s por registro (10 registros = 10 minutos acumulados). |
 
 ---
 
@@ -185,7 +185,7 @@ La pantalla **DEMOSTRACIÓN** contiene una secuencia interactiva estructurada en
   MapReduce formaliza la agregación histórica en tres fases:
   1. **Map:** Transforma cada registro de telemetría en un par clave-valor: $\langle \text{gpu\_id}, \{\text{potencia}, \text{temp}, \text{count}\} \rangle$.
   2. **Shuffle:** Agrupa todas las emisiones bajo listas particionadas por cada acelerador.
-  3. **Reduce:** Agrega métricas consolidadas: potencia media, temperatura máxima y energía acumulada. El dataset histórico presenta un delta real de 60 segundos entre muestras periódicas, por lo que Reduce calcula la energía exactamente sobre ese intervalo: $\text{Horas} = \frac{N \times 60\,\text{s}}{3600\,\text{s/h}}$.
+  3. **Reduce:** Agrega métricas consolidadas: potencia media, temperatura máxima y energía acumulada. Cada registro representa una ventana de muestreo fija de 60 segundos cuyo timestamp identifica el inicio de esa ventana (ej. 10 registros de 12:00 a 12:09 cubren 10 ventanas = 10 minutos acumulados, $\text{Horas} = \frac{N \times 60\,\text{s}}{3600\,\text{s/h}} = 0{,}1667\text{ h}$ como supuesto del dataset).
 * **Ejemplo en ECO-HPC:**  
   En la vista *MapReduce Histórico*, se puede explorar interactivamente cada etapa (`Entrada` $\rightarrow$ `Map` $\rightarrow$ `Shuffle` $\rightarrow$ `Reduce`) con los 160 registros consolidados.
 

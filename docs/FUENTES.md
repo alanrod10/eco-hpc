@@ -111,4 +111,5 @@ Cada entrada clasifica el tipo de conocimiento según el **Control de Evidencia*
 | **Cálculo de 88.473.600 lecturas diarias en 1.024 GPUs (~22,1 GB/día)** | **Supuesto Calculado** | Derivado matemáticamente asumiendo muestreo de 1 segundo y payload promedio de 250 bytes. |
 | **Lote de telemetría de 16 GPUs (`data/telemetry.csv`)** | **Simulación** | Generado sintéticamente con modelos realistas para demostrar los estados del agente. |
 | **Ajuste de frecuencia DVFS y apagado de trabajos en SLURM** | **Simulación** | Comandos formulados conceptualmente y mostrados en la UI; no intervienen fierros reales. |
+| **Semántica de ventana fija de 60 s por registro en MapReduce** | **Supuesto del Dataset / Supuesto Calculado** | Cada registro representa una ventana de muestreo fija de 60 s donde el timestamp identifica su inicio (ej. 10 registros cubren 10 ventanas = 10 min = 0,1667 h). No es una medición física continua. |
 | **Arquitectura distribuida con Kafka, Flink y Cassandra/TimescaleDB** | **Propuesta** | Diseño conceptual para producción a escala; no se despliega en el prototipo local. |
