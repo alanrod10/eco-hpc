@@ -16,6 +16,9 @@
 
 El objetivo primordial del agente es optimizar el consumo eléctrico, prolongar la vida útil del hardware y garantizar la seguridad térmica en un clúster de supercómputo para Inteligencia Artificial.
 
+### Definición del Estado Interno del Agente:
+El agente mantiene memoria histórica de decisiones, estados por GPU y acumuladores del sistema. Las reglas actuales evalúan de forma determinista la percepción presente y no utilizan aprendizaje automático ni dependen de la decisión anterior.
+
 ### Preguntas Canónicas que Responde el Agente:
 1. **¿Qué está ocurriendo en el hardware?** (Diagnóstico integral de la percepción).
 2. **¿En qué estado se encuentra la GPU?** (`NORMAL`, `AHORRO`, `PROTECCION` o `DATOS NO CONFIABLES`).
@@ -27,17 +30,17 @@ El objetivo primordial del agente es optimizar el consumo eléctrico, prolongar 
 
 ## ⚙️ 2. Transparencia Técnica: Matriz de Realidad
 
-Para garantizar máximo rigor metodológico ante el tribunal evaluador:
+Para garantizar máximo rigor metodológico y transparencia técnica:
 
 | Componente | Estado en este Repositorio | Descripción |
 | :--- | :--- | :--- |
-| **Agente Supervisor** | **REALMENTE IMPLEMENTADO** | Implementado en Python (`agent.py`) con ciclo formal de percepción y memoria. |
-| **Motor de Reglas** | **REALMENTE IMPLEMENTADO** | Implementado en `rules.py` con umbrales configurables de simulación. |
+| **Agente Supervisor** | **REALMENTE IMPLEMENTADO** | Implementado en Python (`agent.py`) con memoria histórica y acumuladores. |
+| **Motor de Reglas** | **REALMENTE IMPLEMENTADO** | Implementado en `rules.py` con umbrales configurables de simulación (85 °C de protección). |
 | **Control de Calidad** | **REALMENTE IMPLEMENTADO** | Implementado en `data_quality.py` (filtro de veracidad física). |
-| **Demostración MapReduce**| **REALMENTE IMPLEMENTADO** | Implementado en Python puro (`mapreduce_demo.py`) con fases Map, Shuffle y Reduce. |
-| **Interfaz Web** | **REALMENTE IMPLEMENTADA** | Dashboard interactivo en Streamlit (`app.py`) con 12 vistas y Modo Demo. |
+| **Demostración MapReduce**| **REALMENTE IMPLEMENTADO** | Implementado en Python puro (`mapreduce_demo.py`) con cálculo sobre el delta real de 60s. |
+| **Interfaz Web** | **REALMENTE IMPLEMENTADA** | Dashboard interactivo en Streamlit (`app.py`) con 12 vistas y Demostración en 5 pasos. |
 | **Suite de Pruebas** | **REALMENTE IMPLEMENTADA** | 24 pruebas automatizadas con Pytest (unitarias, integración y negativas). |
-| **Hardware de GPUs** | **SIMULADO** | 16 GPUs simuladas (`GPU-01` a `GPU-16`) en 4 nodos de cómputo. No actúa sobre silicio real. |
+| **Hardware de GPUs** | **SIMULADO** | 16 GPUs simuladas (`GPU-01` a `GPU-16`) en 4 nodos. No posee H100 físicas ni actúa sobre silicio real. |
 | **Actuadores** | **SIMULADO** | Las acciones (modulación DVFS, cooling, power-capping) son recomendaciones simuladas. |
 | **Clúster de 1.024 GPUs** | **CONCEPTUAL** | Supuesto dimensionado matemáticamente para ilustrar el volumen del Big Data. |
 | **Base NoSQL Distribuida**| **CONCEPTUAL** | Propuesta de arquitectura para producción a escala (TimescaleDB / Cassandra). |

@@ -28,64 +28,146 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Estilos CSS profesionales y académicos (sin sobrecarga visual)
+# Estilos CSS profesionales - TEMA CLARO Y ALTO CONTRASTE PARA PROYECTOR
 st.markdown(
     """
     <style>
+    /* Tipografía y jerarquía de alto contraste */
+    html, body, [class*="css"] {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        color: #0f172a;
+    }
     .main-title {
-        font-size: 2.1rem;
-        font-weight: 700;
-        color: #1e293b;
+        font-size: 2.3rem;
+        font-weight: 800;
+        color: #0f172a;
         margin-bottom: 0.2rem;
+        letter-spacing: -0.02em;
     }
     .sub-title {
-        font-size: 1.05rem;
-        color: #475569;
-        margin-bottom: 1.2rem;
+        font-size: 1.15rem;
+        color: #334155;
+        margin-bottom: 1.4rem;
+        font-weight: 500;
+    }
+    .section-header {
+        font-size: 1.45rem;
+        font-weight: 700;
+        color: #0f4c81;
+        margin-top: 1.2rem;
+        margin-bottom: 0.6rem;
     }
     .badge-simulated {
         background-color: #f1f5f9;
-        color: #475569;
-        font-size: 0.75rem;
-        padding: 0.2rem 0.5rem;
-        border-radius: 4px;
-        border: 1px solid #cbd5e1;
-        font-weight: 600;
+        color: #1e293b;
+        font-size: 0.85rem;
+        padding: 0.3rem 0.6rem;
+        border-radius: 6px;
+        border: 2px solid #94a3b8;
+        font-weight: 700;
+        display: inline-block;
     }
-    .metric-card {
-        background-color: #f8fafc;
-        border: 1px solid #e2e8f0;
+    .badge-step {
+        background-color: #0f4c81;
+        color: #ffffff;
+        font-size: 0.9rem;
+        font-weight: 700;
+        padding: 0.25rem 0.6rem;
+        border-radius: 4px;
+        display: inline-block;
+        margin-bottom: 0.4rem;
+    }
+
+    /* Tarjetas de Métricas optimizadas para Proyector */
+    .stMetric {
+        background-color: #ffffff !important;
+        border: 2px solid #cbd5e1 !important;
+        border-radius: 10px !important;
+        padding: 14px 18px !important;
+        box-shadow: 0 2px 4px rgba(15, 23, 42, 0.05) !important;
+    }
+    .stMetric label {
+        font-size: 1.05rem !important;
+        font-weight: 700 !important;
+        color: #334155 !important;
+    }
+    .stMetric [data-testid="stMetricValue"] {
+        font-size: 2.2rem !important;
+        font-weight: 800 !important;
+        color: #0f172a !important;
+    }
+
+    /* Cajas de Decisión Semánticas con Alto Contraste */
+    .decision-card {
         border-radius: 8px;
-        padding: 1rem;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+        padding: 1.2rem 1.4rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+        font-size: 1.05rem;
+        line-height: 1.5;
+    }
+    .decision-card h3 {
+        margin-top: 0;
+        font-size: 1.4rem;
+        font-weight: 800;
+        margin-bottom: 0.6rem;
     }
     .decision-box-normal {
-        border-left: 6px solid #10b981;
+        border: 2px solid #86efac;
+        border-left: 10px solid #16a34a;
         background-color: #f0fdf4;
-        padding: 1rem;
-        border-radius: 6px;
-        margin-bottom: 0.8rem;
+        color: #14532d;
     }
     .decision-box-ahorro {
-        border-left: 6px solid #0284c7;
-        background-color: #f0f9ff;
-        padding: 1rem;
-        border-radius: 6px;
-        margin-bottom: 0.8rem;
+        border: 2px solid #fde68a;
+        border-left: 10px solid #d97706;
+        background-color: #fffbeb;
+        color: #78350f;
     }
     .decision-box-proteccion {
-        border-left: 6px solid #ef4444;
+        border: 2px solid #fca5a5;
+        border-left: 10px solid #dc2626;
         background-color: #fef2f2;
-        padding: 1rem;
-        border-radius: 6px;
-        margin-bottom: 0.8rem;
+        color: #7f1d1d;
     }
     .decision-box-anomalia {
-        border-left: 6px solid #8b5cf6;
+        border: 2px solid #d8b4fe;
+        border-left: 10px solid #9333ea;
         background-color: #faf5ff;
+        color: #581c87;
+    }
+
+    /* Flujo visual del agente */
+    .flow-box {
+        background-color: #ffffff;
+        border: 2px solid #cbd5e1;
+        border-radius: 8px;
         padding: 1rem;
-        border-radius: 6px;
         margin-bottom: 0.8rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .flow-box h4 {
+        margin-top: 0;
+        color: #0f4c81;
+        font-weight: 700;
+        font-size: 1.15rem;
+    }
+
+    /* Cajas pedagógicas PEAS */
+    .peas-card {
+        background-color: #ffffff;
+        border: 2px solid #e2e8f0;
+        border-top: 6px solid #0f4c81;
+        border-radius: 8px;
+        padding: 1.2rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    }
+    .peas-card h3 {
+        color: #0f4c81;
+        font-weight: 800;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
     }
     </style>
     """,
@@ -145,13 +227,13 @@ menu_option = st.sidebar.radio(
     "Navegación del Proyecto:",
     [
         "1. Inicio & Presentación",
-        "2. Modo Demo (Exposición Oral)",
+        "2. Demostración",
         "3. Dashboard General",
         "4. Telemetría de GPUs",
-        "5. Pantalla del Agente (Decisión)",
+        "5. Agente (Decisión & Ciclo)",
         "6. Las 5 V del Big Data",
         "7. Calidad de Datos & Veracidad",
-        "8. Demostración MapReduce",
+        "8. MapReduce Histórico",
         "9. Marco PEAS & Ficha Técnica",
         "10. Arquitectura (Prototipo vs Escala)",
         "11. Sostenibilidad & NoSQL & Ley 25.326",
@@ -161,7 +243,7 @@ menu_option = st.sidebar.radio(
 )
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("**Estado General del Agente:**")
+st.sidebar.markdown("**Estado Global del Agente:**")
 st.sidebar.info(f"**{cluster_summary['general_status']}**")
 st.sidebar.caption(
     f"Intervenciones: {cluster_summary['interventions_count']} | Ahorro: ~{cluster_summary['simulated_savings_kwh']} kWh"
@@ -179,7 +261,7 @@ if st.sidebar.button("🔄 Regenerar Telemetría / Reset"):
 # ==============================================================================
 if menu_option == "1. Inicio & Presentación":
     st.markdown("<h1 class='main-title'>ECO-HPC — Agente Supervisor de Eficiencia Energética</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='sub-title'>Trabajo Práctico Integrador: Las 5 V del Big Data como infraestructura de alimentación para sistemas de IA</p>", unsafe_allow_html=True)
+    st.markdown("<p class='sub-title'>Trabajo Práctico Integrador: Las 5 V del Big Data como infraestructura de alimentación para sistemas de Inteligencia Artificial</p>", unsafe_allow_html=True)
 
     col_obs1, col_obs2 = st.columns([3, 2])
     with col_obs1:
@@ -205,12 +287,12 @@ if menu_option == "1. Inicio & Presentación":
 
         st.info(
             """
-            **Pregunta central que responde el agente ECO-HPC:**
-            - ¿Qué está ocurriendo en el hardware?
-            - ¿En qué estado se encuentra la GPU?
-            - ¿Qué decisión corresponde?
-            - ¿Por qué? (Justificación técnica)
-            - ¿Qué acción se recomienda o simula?
+            **Preguntas centrales que responde el agente ECO-HPC:**
+            1. **¿Qué está ocurriendo?** Diagnóstico del estado térmico, eléctrico y de carga.
+            2. **¿En qué estado se encuentra la GPU?** Normal, Ahorro, Protección o Datos No Confiables.
+            3. **¿Qué decisión corresponde?** Mantener, Ahorrar (DVFS), Proteger o Revisar sensor.
+            4. **¿Por qué?** Justificación técnica determinista basada en reglas.
+            5. **¿Qué acción se recomienda o simula?** Ajuste de reloj, control térmico o cuotas de cómputo.
             """
         )
 
@@ -224,7 +306,7 @@ if menu_option == "1. Inicio & Presentación":
             | **Escala del Prototipo** | **16 GPUs simuladas** en 4 nodos |
             | **Tipo de Agente** | Reactivo con Estado Interno (Reglas) |
             | **Actuadores** | **SIMULADOS** (DVFS, cooling, SLURM) |
-            | **Hardware Físico** | **SIMULADO** (sin control de fierros reales) |
+            | **Hardware Físico** | **SIMULADO** (sin control de hardware físico) |
             | **Paradigma Batch** | **MapReduce** didáctico en Python |
             | **Marco Legal** | **Ley 25.326** y Res. AAIP 47/2018 |
             """
@@ -237,30 +319,30 @@ if menu_option == "1. Inicio & Presentación":
 
 
 # ==============================================================================
-# VISTA 2: MODO DEMO (EXPOSICIÓN ORAL EN 3-5 MINUTOS)
+# VISTA 2: DEMOSTRACIÓN (5 PASOS)
 # ==============================================================================
-elif menu_option == "2. Modo Demo (Exposición Oral)":
-    st.markdown("<h1 class='main-title'>🎙️ Modo Demostración de Exposición Oral</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='sub-title'>Secuencia interactiva de 5 pasos diseñada para la defensa oral ante el tribunal evaluador</p>", unsafe_allow_html=True)
+elif menu_option == "2. Demostración":
+    st.markdown("<h1 class='main-title'>⚡ DEMOSTRACIÓN DEL SISTEMA</h1>", unsafe_allow_html=True)
+    st.markdown("<p class='sub-title'>Secuencia interactiva en 5 pasos para demostrar el funcionamiento del sistema en vivo</p>", unsafe_allow_html=True)
 
     demo_step = st.radio(
-        "Seleccioná el Escenario de la Exposición:",
+        "Seleccioná el Escenario a Demostrar:",
         [
-            "Paso 1: Sistema Normal (Operación Nominal)",
-            "Paso 2: Oportunidad de Ahorro (Subutilización con Alto Consumo)",
-            "Paso 3: Protección Crítica (Temperatura Elevada y Sobrecarga)",
-            "Paso 4: Veracidad y Detección de Anomalías (Fallo de Sensor)",
-            "Paso 5: Procesamiento Batch con MapReduce (Cálculo Histórico)",
+            "01 — NORMAL",
+            "02 — AHORRO",
+            "03 — PROTECCIÓN",
+            "04 — ANOMALÍA",
+            "05 — MAPREDUCE",
         ],
         horizontal=True,
     )
 
     st.markdown("---")
 
-    if "Paso 1" in demo_step:
-        st.subheader("Paso 1 — Estado Normal: Operación Balanceada")
+    if "01" in demo_step:
+        st.markdown("<span class='badge-step'>01 — NORMAL</span> <span class='section-header'>Operación Normal: El sistema está estable</span>", unsafe_allow_html=True)
         st.markdown(
-            "> *\"Este es nuestro entorno HPC operando en condiciones nominales. Los sensores reportan parámetros térmicos y de potencia dentro de la envolvente de diseño.\"*"
+            "**Explicación breve:** Las condiciones térmicas y eléctricas operan dentro de la envolvente de diseño. El agente valida los datos y decide mantener la operación."
         )
         sample = next((d for d in current_decisions if d.gpu_id == "GPU-01"), current_decisions[0])
         col1, col2, col3 = st.columns([1, 1, 2])
@@ -272,102 +354,98 @@ elif menu_option == "2. Modo Demo (Exposición Oral)":
         with col3:
             st.markdown(
                 f"""
-                <div class='decision-box-normal'>
-                    <h4>ESTADO INTERNO: {sample.state.value}</h4>
-                    <p><b>Decisión:</b> {sample.action.value}</p>
-                    <p><b>¿Qué está ocurriendo?</b> {sample.what_is_happening()}</p>
-                    <p><b>Motivo:</b> {sample.reason}</p>
-                    <p><b>Acción Simulada:</b> {sample.action_details}</p>
+                <div class='decision-card decision-box-normal'>
+                    <h3>ESTADO: {sample.state.value}</h3>
+                    <p><b>DECISIÓN:</b> {sample.action.value}</p>
+                    <p><b>ACCIÓN SIMULADA:</b> {sample.action_details}</p>
+                    <p><b>MOTIVO:</b> {sample.reason}</p>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
 
-    elif "Paso 2" in demo_step:
-        st.subheader("Paso 2 — Estado Ahorro: Oportunidad de Eficiencia Energética")
+    elif "02" in demo_step:
+        st.markdown("<span class='badge-step'>02 — AHORRO</span> <span class='section-header'>Ahorro: Detección de ineficiencia energética</span>", unsafe_allow_html=True)
         st.markdown(
-            "> *\"Aquí el agente detecta una ineficiencia energética: la GPU está subutilizada (ej. esperando I/O o trabajo concluido), pero continúa disipando 380 W con reloj elevado. El agente decide reducir frecuencia.\"*"
+            "**Explicación breve:** La GPU disipa 380 W pero su uso es de solo 14% (espera de I/O). El agente detecta la ineficiencia y modula el reloj por DVFS para ahorrar ~152 W."
         )
         sample = next((d for d in current_decisions if d.gpu_id == "GPU-04"), current_decisions[0])
         col1, col2, col3 = st.columns([1, 1, 2])
         col1.metric("GPU Evaluada", sample.gpu_id)
         col1.metric("Temperatura", f"{sample.perceptions['temperature']} °C", delta="-12 °C (Segura)")
         col2.metric("Potencia Eléctrica", f"{sample.perceptions['power_w']} W", delta="Elevada para carga baja", delta_color="inverse")
-        col2.metric("Utilización de Cómputo", f"{sample.perceptions['utilization']} %", delta="Subutilizada", delta_color="inverse")
+        col2.metric("Utilización de Cómputo", f"{sample.perceptions['utilization']} %", delta="14% (Subutilizada)", delta_color="inverse")
 
         with col3:
             st.markdown(
                 f"""
-                <div class='decision-box-ahorro'>
-                    <h4>ESTADO INTERNO: {sample.state.value}</h4>
-                    <p><b>Decisión:</b> {sample.action.value}</p>
-                    <p><b>¿Qué está ocurriendo?</b> {sample.what_is_happening()}</p>
-                    <p><b>Motivo:</b> {sample.reason}</p>
-                    <p><b>Acción Simulada:</b> {sample.action_details}</p>
+                <div class='decision-card decision-box-ahorro'>
+                    <h3>ESTADO: {sample.state.value}</h3>
+                    <p><b>DECISIÓN:</b> {sample.action.value}</p>
+                    <p><b>ACCIÓN SIMULADA:</b> {sample.action_details}</p>
+                    <p><b>MOTIVO:</b> {sample.reason}</p>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
 
-    elif "Paso 3" in demo_step:
-        st.subheader("Paso 3 — Estado Protección: Alerta Térmica y Estrés de Hardware")
+    elif "03" in demo_step:
+        st.markdown("<span class='badge-step'>03 — PROTECCIÓN</span> <span class='section-header'>Protección: La temperatura supera el umbral configurado</span>", unsafe_allow_html=True)
         st.markdown(
-            "> *\"Durante un entrenamiento intensivo de LLM, la temperatura trepa a 89 °C superando el umbral crítico de 85 °C y el consumo alcanza 720 W. El agente activa protección inmediata para preservar el hardware.\"*"
+            "**Explicación breve:** Durante entrenamiento intensivo, la temperatura alcanza 89 °C superando el umbral preventivo configurado para la simulación (85 °C). El agente activa protección inmediata."
         )
         sample = next((d for d in current_decisions if d.gpu_id == "GPU-07"), current_decisions[0])
         col1, col2, col3 = st.columns([1, 1, 2])
         col1.metric("GPU Evaluada", sample.gpu_id)
-        col1.metric("Temperatura", f"{sample.perceptions['temperature']} °C", delta="CRÍTICA (>85°C)", delta_color="inverse")
-        col2.metric("Potencia Eléctrica", f"{sample.perceptions['power_w']} W", delta="PICO EXTREMO", delta_color="inverse")
+        col1.metric("Temperatura", f"{sample.perceptions['temperature']} °C", delta=">= 85 °C (Alerta)", delta_color="inverse")
+        col2.metric("Potencia Eléctrica", f"{sample.perceptions['power_w']} W", delta="Pico Extremo (720 W)", delta_color="inverse")
         col2.metric("Utilización de Cómputo", f"{sample.perceptions['utilization']} %", delta="97% (Saturación)")
 
         with col3:
             st.markdown(
                 f"""
-                <div class='decision-box-proteccion'>
-                    <h4>ESTADO INTERNO: {sample.state.value}</h4>
-                    <p><b>Decisión:</b> {sample.action.value}</p>
-                    <p><b>¿Qué está ocurriendo?</b> {sample.what_is_happening()}</p>
-                    <p><b>Motivo:</b> {sample.reason}</p>
-                    <p><b>Acción Simulada:</b> {sample.action_details}</p>
+                <div class='decision-card decision-box-proteccion'>
+                    <h3>ESTADO: {sample.state.value}</h3>
+                    <p><b>DECISIÓN:</b> {sample.action.value}</p>
+                    <p><b>ACCIÓN SIMULADA:</b> {sample.action_details}</p>
+                    <p><b>MOTIVO:</b> {sample.reason}</p>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
 
-    elif "Paso 4" in demo_step:
-        st.subheader("Paso 4 — Veracidad: Rechazo de Percepciones Anómalas o Inconsistentes")
+    elif "04" in demo_step:
+        st.markdown("<span class='badge-step'>04 — ANOMALÍA</span> <span class='section-header'>Anomalía: Detección de fallo sensorial de veracidad</span>", unsafe_allow_html=True)
         st.markdown(
-            "> *\"Demostración de la V de Veracidad. El sensor reporta 150 °C pero con 10 W de consumo y 0% de uso. Es físicamente inconsistente. Una percepción no es una orden: el agente no apaga el servidor a ciegas, sino que aísla el dato y marca DATOS NO CONFIABLES.\"*"
+            "**Explicación breve:** El sensor reporta 150 °C con solo 10 W de potencia. Una percepción no es una orden: el filtro de veracidad aísla la contradicción y marca DATOS NO CONFIABLES."
         )
         sample = next((d for d in current_decisions if d.gpu_id == "GPU-12"), current_decisions[0])
         col1, col2, col3 = st.columns([1, 1, 2])
         col1.metric("GPU Evaluada", sample.gpu_id)
-        col1.metric("Temperatura", f"{sample.perceptions['temperature']} °C", delta="ANOMALÍA FÍSICA", delta_color="inverse")
-        col2.metric("Potencia Eléctrica", f"{sample.perceptions['power_w']} W", delta="Inconsistente con T", delta_color="inverse")
+        col1.metric("Temperatura", f"{sample.perceptions['temperature']} °C", delta="Anomalía (150 °C)", delta_color="inverse")
+        col2.metric("Potencia Eléctrica", f"{sample.perceptions['power_w']} W", delta="10 W (Inconsistente)", delta_color="inverse")
         col2.metric("Utilización", f"{sample.perceptions['utilization']} %")
 
         with col3:
             st.markdown(
                 f"""
-                <div class='decision-box-anomalia'>
-                    <h4>ESTADO INTERNO: {sample.state.value}</h4>
-                    <p><b>Decisión:</b> {sample.action.value}</p>
-                    <p><b>¿Qué está ocurriendo?</b> {sample.what_is_happening()}</p>
-                    <p><b>Motivo:</b> {sample.reason}</p>
-                    <p><b>Acción Simulada:</b> {sample.action_details}</p>
+                <div class='decision-card decision-box-anomalia'>
+                    <h3>ESTADO: {sample.state.value}</h3>
+                    <p><b>DECISIÓN:</b> {sample.action.value}</p>
+                    <p><b>ACCIÓN SIMULADA:</b> {sample.action_details}</p>
+                    <p><b>MOTIVO:</b> {sample.reason}</p>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
 
-    elif "Paso 5" in demo_step:
-        st.subheader("Paso 5 — MapReduce: Agregación Batch para Análisis Histórico")
+    elif "05" in demo_step:
+        st.markdown("<span class='badge-step'>05 — MAPREDUCE</span> <span class='section-header'>Análisis Histórico: Agregación Batch con MapReduce</span>", unsafe_allow_html=True)
         st.markdown(
-            "> *\"Para la V de Velocidad, mientras el agente actúa en baja latencia, el histórico se procesa en Batch mediante MapReduce para calcular la energía total y perfiles de consumo medio por GPU.\"*"
+            "**Explicación breve:** Procesamiento batch con MapReduce (Map, Shuffle, Reduce) sobre 160 lecturas históricas consolidando potencia media y energía total (kWh) sobre el delta real de 60 s."
         )
         mr_results = execute_mapreduce(df_historical.to_dict(orient="records"))
-        st.write(f"**Registros históricos procesados:** {mr_results['input_records_count']} lecturas consolidadas.")
+        st.info(f"**Lote procesado:** {mr_results['input_records_count']} registros históricos consolidados (intervalo temporal real entre muestras: 60 s / 1 minuto).")
 
         mr_table = pd.DataFrame(list(mr_results["reduce_results"].values()))
         st.dataframe(
@@ -388,18 +466,19 @@ elif menu_option == "2. Modo Demo (Exposición Oral)":
 
 
 # ==============================================================================
-# VISTA 3: DASHBOARD GENERAL
+# VISTA 3: DASHBOARD GENERAL (ENTENDIBLE EN 10 SEGUNDOS)
 # ==============================================================================
 elif menu_option == "3. Dashboard General":
-    st.markdown("<h1 class='main-title'>📊 Dashboard del Clúster HPC</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='sub-title'>Monitoreo agregado y telemetría en tiempo real del clúster de aceleradores</p>", unsafe_allow_html=True)
+    st.markdown("<h1 class='main-title'>ECO-HPC</h1>", unsafe_allow_html=True)
+    st.markdown("<p class='sub-title'>Agente Supervisor de Eficiencia Energética para un entorno HPC</p>", unsafe_allow_html=True)
 
+    # 5 Métricas Principales en Primer Plano
     col1, col2, col3, col4, col5 = st.columns(5)
-    col1.metric("GPUs Simuladas", cluster_summary["total_gpus"], help="16 GPUs distribuidas en 4 nodos de cómputo")
+    col1.metric("GPU Simuladas", cluster_summary["total_gpus"], help="16 aceleradores simulados en 4 nodos de cómputo")
     col2.metric("Temp. Promedio", f"{cluster_summary['avg_temperature']} °C", help="Promedio de lecturas térmicas válidas")
     col3.metric("Consumo Total", f"{cluster_summary['total_power_w']} W", help="Potencia total instantánea disipada por el clúster")
-    col4.metric("Utilización Media", f"{cluster_summary['avg_utilization']} %", help="Carga de cálculo promedio de los núcleos de IA")
-    col5.metric("Ahorro Acumulado", f"{cluster_summary['simulated_savings_kwh']} kWh", help="Energía eléctrica ahorrada por intervenciones del agente")
+    col4.metric("Utilización Media", f"{cluster_summary['avg_utilization']} %", help="Carga de cómputo promedio")
+    col5.metric("Estado General", cluster_summary["general_status"], help="Diagnóstico consolidado del supervisor")
 
     st.markdown("---")
 
@@ -409,10 +488,10 @@ elif menu_option == "3. Dashboard General":
         states_df = pd.DataFrame(
             [{"Estado": k, "Cantidad de GPUs": v} for k, v in cluster_summary["states_count"].items()]
         )
-        st.bar_chart(states_df.set_index("Estado"), color="#0284c7")
+        st.bar_chart(states_df.set_index("Estado"), color="#0f4c81")
 
     with col_chart2:
-        st.markdown("#### Acciones Operativas Simuladas")
+        st.markdown("#### Acciones Operativas Recomendadas")
         actions_df = pd.DataFrame(
             [{"Acción": k, "Frecuencia": v} for k, v in cluster_summary["actions_count"].items()]
         )
@@ -434,10 +513,9 @@ elif menu_option == "3. Dashboard General":
 # VISTA 4: TELEMETRÍA DE GPUS
 # ==============================================================================
 elif menu_option == "4. Telemetría de GPUs":
-    st.markdown("<h1 class='main-title'>📡 Percepciones de Telemetría de GPUs</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='sub-title'>Datos sensoriales recopilados por M2M / IoT desde los nodos de cómputo</p>", unsafe_allow_html=True)
+    st.markdown("<h1 class='main-title'>📡 Telemetría de Sensores (Percepciones M2M)</h1>", unsafe_allow_html=True)
+    st.markdown("<p class='sub-title'>Datos sensoriales recopilados por canales M2M/IoT desde los nodos de cómputo</p>", unsafe_allow_html=True)
 
-    # Conversión estructurada a DataFrame
     table_rows = []
     for d in current_decisions:
         p = d.perceptions
@@ -462,12 +540,12 @@ elif menu_option == "4. Telemetría de GPUs":
             lambda val: "background-color: #fef2f2; color: #991b1b; font-weight: bold;"
             if val == "PROTECCION"
             else (
-                "background-color: #f0f9ff; color: #075985; font-weight: bold;"
+                "background-color: #fffbeb; color: #92400e; font-weight: bold;"
                 if val == "AHORRO"
                 else (
                     "background-color: #faf5ff; color: #581c87; font-weight: bold;"
                     if val == "DATOS NO CONFIABLES"
-                    else ""
+                    else "background-color: #f0fdf4; color: #166534; font-weight: bold;"
                 )
             ),
             subset=["Estado Agente"],
@@ -477,9 +555,9 @@ elif menu_option == "4. Telemetría de GPUs":
     )
 
     st.markdown("---")
-    st.markdown("#### Gráficos de Correlación Térmica y de Consumo")
+    st.markdown("#### Correlación Térmica y de Consumo")
     valid_plot_df = df_table.dropna(subset=["Temp (°C)", "Potencia (W)", "Utilización (%)"]).copy()
-    valid_plot_df = valid_plot_df[valid_plot_df["Temp (°C)"] < 120]  # Excluir anomalía para gráfico limpio
+    valid_plot_df = valid_plot_df[valid_plot_df["Temp (°C)"] < 120]
 
     col_g1, col_g2 = st.columns(2)
     with col_g1:
@@ -489,7 +567,7 @@ elif menu_option == "4. Telemetría de GPUs":
             y="Potencia (W)",
             color="Estado Agente",
         )
-        st.caption("Relación Utilización vs Potencia: Muestra GPUs en subutilización con alto consumo (cuadrante Ahorro).")
+        st.caption("Relación Utilización vs Potencia: Identifica GPUs subutilizadas con consumo alto (cuadrante Ahorro).")
     with col_g2:
         st.scatter_chart(
             valid_plot_df,
@@ -501,95 +579,120 @@ elif menu_option == "4. Telemetría de GPUs":
 
 
 # ==============================================================================
-# VISTA 5: PANTALLA DEL AGENTE (DECISIÓN Y CICLO COGNITIVO)
+# VISTA 5: AGENTE (DECISIÓN & CICLO)
 # ==============================================================================
-elif menu_option == "5. Pantalla del Agente (Decisión)":
-    st.markdown("<h1 class='main-title'>🧠 Pantalla del Agente ECO-HPC</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='sub-title'>Ciclo cognitivo completo: Percepciones → Control de Calidad → Estado Interno → Decisión → Acción Simulada</p>", unsafe_allow_html=True)
+elif menu_option == "5. Agente (Decisión & Ciclo)":
+    st.markdown("<h1 class='main-title'>🧠 AGENTE ECO-HPC</h1>", unsafe_allow_html=True)
+    st.markdown("<p class='sub-title'>Ciclo cognitivo completo: Percepciones → Control de Calidad → Estado → Decisión → Acción</p>", unsafe_allow_html=True)
 
     gpu_options = [d.gpu_id for d in current_decisions]
-    selected_gpu = st.selectbox("Seleccionar GPU para inspeccionar el ciclo del agente:", gpu_options, index=6)
+    selected_gpu = st.selectbox("Seleccionar GPU para inspeccionar el ciclo cognitivo del agente:", gpu_options, index=6)
 
-    chosen_decision = next(d for d in current_decisions if d.gpu_id == selected_gpu)
-    p = chosen_decision.perceptions
+    chosen = next(d for d in current_decisions if d.gpu_id == selected_gpu)
+    p = chosen.perceptions
 
     st.markdown("---")
 
-    col_flow1, col_flow2, col_flow3 = st.columns([1, 1, 2])
-
-    with col_flow1:
-        st.markdown("#### 1. Percepciones (Sensores)")
-        st.write(f"**GPU:** `{chosen_decision.gpu_id}`")
-        st.write(f"**Nodo:** `{p.get('node')}`")
-        st.write(f"**Temperatura:** `{p.get('temperature')} °C`")
-        st.write(f"**Potencia:** `{p.get('power_w')} W`")
-        st.write(f"**Utilización:** `{p.get('utilization')} %`")
-        st.write(f"**Frecuencia:** `{p.get('frequency')} MHz`")
-        st.write(f"**Cooling Fan:** `{p.get('cooling')} %`")
-        st.write(f"**Trabajo:** `{p.get('job_status')}`")
-
-    with col_flow2:
-        st.markdown("#### 2. Control de Calidad")
-        if chosen_decision.is_data_valid:
-            st.success("✅ **Lectura Válida**")
-            st.caption("Superó los rangos físicos y filtros de consistencia cruzada.")
-        else:
-            st.error("❌ **Anomalía Detectada**")
-            for iss in chosen_decision.quality_issues:
-                st.caption(f"• {iss}")
-
-        st.markdown("#### 3. Regla Aplicada")
-        st.code(chosen_decision.rule_id, language="text")
-
-    with col_flow3:
-        st.markdown("#### 4. Estado, Decisión y Acción")
-        st_val = chosen_decision.state.value
-
-        box_class = (
-            "decision-box-proteccion"
-            if st_val == "PROTECCION"
-            else (
-                "decision-box-ahorro"
-                if st_val == "AHORRO"
-                else (
-                    "decision-box-anomalia"
-                    if st_val == "DATOS NO CONFIABLES"
-                    else "decision-box-normal"
-                )
-            )
-        )
-
+    # Representación visual del flujo cognitivo del agente
+    c_p1, c_p2, c_p3, c_p4, c_p5 = st.columns(5)
+    with c_p1:
         st.markdown(
             f"""
-            <div class='{box_class}'>
-                <h3 style='margin-top:0;'>ESTADO INTERNO: {chosen_decision.state.value}</h3>
-                <p><b>DECISIÓN DEL AGENTE:</b> <span style='font-size:1.15rem; font-weight:bold;'>{chosen_decision.action.value}</span></p>
-                <hr style='margin: 0.5rem 0;'>
-                <p><b>¿Qué está ocurriendo?</b><br>{chosen_decision.what_is_happening()}</p>
-                <p><b>¿Por qué? (Justificación Técnica):</b><br>{chosen_decision.reason}</p>
-                <p><b>Acción Operativa Simulada:</b><br>{chosen_decision.action_details}</p>
+            <div class='flow-box'>
+                <h4>1. PERCEPCIONES</h4>
+                <p><b>GPU:</b> {chosen.gpu_id}</p>
+                <p><b>Temp:</b> {p.get('temperature')} °C</p>
+                <p><b>Potencia:</b> {p.get('power_w')} W</p>
+                <p><b>Uso:</b> {p.get('utilization')} %</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    with c_p2:
+        st.markdown(
+            f"""
+            <div class='flow-box'>
+                <h4>2. CALIDAD</h4>
+                <p><b>Veracidad:</b> {'✅ VÁLIDA' if chosen.is_data_valid else '❌ ANOMALÍA'}</p>
+                <p><b>Filtro:</b> Rango & Lógica</p>
+                <p><b>Leyes Físicas:</b> Verificadas</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    with c_p3:
+        st.markdown(
+            f"""
+            <div class='flow-box'>
+                <h4>3. ESTADO</h4>
+                <p><b>Memoria:</b> Actualizada</p>
+                <p><b>Estado:</b><br><b style='color:#0f4c81; font-size:1.1rem;'>{chosen.state.value}</b></p>
+                <p><b>Determinismo:</b> Sí</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    with c_p4:
+        st.markdown(
+            f"""
+            <div class='flow-box'>
+                <h4>4. DECISIÓN</h4>
+                <p><b>Regla:</b> {chosen.rule_id}</p>
+                <p><b>Decisión:</b><br><b style='color:#0f4c81; font-size:1.1rem;'>{chosen.action.value}</b></p>
+                <p><b>Sin ML:</b> Regla fija</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    with c_p5:
+        st.markdown(
+            f"""
+            <div class='flow-box'>
+                <h4>5. ACCIÓN</h4>
+                <p><b>Tipo:</b> SIMULADA</p>
+                <p><b>DVFS / Cooling</b></p>
+                <p><b>SLURM Quota</b></p>
             </div>
             """,
             unsafe_allow_html=True,
         )
 
     st.markdown("---")
-    st.markdown("#### Diagrama del Flujo Fundamental del Agente")
-    st.code(
-        """
-        SENSORES (Telemetría cruda M2M)
-           ↓
-        PERCEPCIONES (Vector numérico tipado)
-           ↓
-        CONTROL DE CALIDAD (Filtro de veracidad de límites físicos e inconsistencias)
-           ↓
-        ESTADO INTERNO (Actualización de memoria y clasificación: NORMAL, AHORRO, PROTECCIÓN, ANOMALÍA)
-           ↓
-        DECISIÓN (Evaluación de reglas jerárquicas deterministas)
-           ↓
-        ACCIÓN SIMULADA (Recomendación operativa: MANTENER, AHORRAR, REFRIGERAR, PROTEGER)
+
+    # Ficha de Decisión Detallada
+    st_val = chosen.state.value
+    box_class = (
+        "decision-box-proteccion"
+        if st_val == "PROTECCION"
+        else (
+            "decision-box-ahorro"
+            if st_val == "AHORRO"
+            else (
+                "decision-box-anomalia"
+                if st_val == "DATOS NO CONFIABLES"
+                else "decision-box-normal"
+            )
+        )
+    )
+
+    st.markdown(
+        f"""
+        <div class='decision-card {box_class}'>
+            <h3>{chosen.gpu_id} — ESTADO: {chosen.state.value}</h3>
+            <p style='font-size:1.2rem;'><b>DECISIÓN DEL AGENTE:</b> {chosen.action.value}</p>
+            <p><b>ACCIÓN SIMULADA:</b> {chosen.action_details}</p>
+            <p><b>MOTIVO:</b> {chosen.reason}</p>
+            <hr style='border:0; border-top: 1px solid rgba(0,0,0,0.15); margin: 0.8rem 0;'>
+            <p><b>¿Qué está ocurriendo?</b> {chosen.what_is_happening()}</p>
+        </div>
         """,
-        language="text",
+        unsafe_allow_html=True,
+    )
+
+    st.info(
+        "💡 **Definición Canónica de Estado Interno:** El agente mantiene memoria histórica de decisiones, estados por GPU "
+        "y acumuladores del sistema. Las reglas actuales evalúan de forma determinista la percepción presente "
+        "y no utilizan aprendizaje automático ni dependen de la decisión anterior."
     )
 
 
@@ -605,11 +708,11 @@ elif menu_option == "6. Las 5 V del Big Data":
     )
 
     with tab_vol:
-        st.subheader("Volumen: Cálculo Pedagógico a Escala vs Prototipo")
+        st.subheader("Volumen: Cuántos datos puede generar el sistema")
         st.markdown(
             """
-            Para comprender por qué la telemetría de un clúster HPC constituye un problema de Big Data,
-            analizamos el **SUPUESTO CALCULADO DEL ESCENARIO** a escala conceptual:
+            En un clúster HPC de producción para Inteligencia Artificial, la telemetría acumulativa de alta frecuencia
+            genera volúmenes masivos de datos:
             """
         )
         st.latex(
@@ -633,71 +736,71 @@ elif menu_option == "6. Las 5 V del Big Data":
         with col_v2:
             st.markdown(
                 """
-                **Prototipo Pequeño ≠ Volumen Conceptual Pequeño:**
+                **Prototipo Didáctico vs Escala Conceptual:**
                 - El prototipo opera intencionalmente con **16 GPUs simuladas** para garantizar
-                  ejecución ligera, explicabilidad didáctica e interactividad fluida.
+                  ejecución liviana, total explicabilidad e interactividad fluida en cualquier máquina.
                 - La arquitectura conceptual está diseñada para escalar horizontalmente hacia
                   millones de registros diarios.
                 """
             )
 
     with tab_vel:
-        st.subheader("Velocidad: Dualidad Baja Latencia vs Procesamiento Batch")
+        st.subheader("Velocidad: Qué tan rápido se generan y procesan")
         st.markdown(
             """
-            En un clúster HPC existen dos requerimientos temporales antagónicos y complementarios:
+            En ECO-HPC coexisten dos requerimientos de velocidad complementarios:
 
             1. **Baja Latencia (Streaming / Tiempo Real < 1-2 segundos):**
-               - Necesaria para el **Agente Supervisor**: detección instantánea de picos térmicos,
-                 riesgo de embalamiento térmico (*thermal runaway*) y derroche eléctrico.
-               - El agente debe percibir y decidir en milisegundos.
+               - Necesaria para el **Agente Supervisor**: detección inmediata de picos térmicos
+                 y derroche energético en GPUs desocupadas.
+               - El agente percibe y decide en milisegundos.
 
             2. **Batch / Diferido (Horas / Días / Semanas):**
                - Procesamiento de series temporales históricas mediante **MapReduce**.
-               - Cálculo de métricas consolidadas: consumo medio por trabajo, detección de derivas en sensores,
-                 cálculo del PUE (Power Usage Effectiveness) y auditoría de sostenibilidad.
+               - Cálculo de consumo energético acumulado en kWh, perfiles medios por GPU
+                 y auditorías de sostenibilidad ambiental.
             """
         )
 
     with tab_var:
-        st.subheader("Variedad: Datos Estructurados, Semiestructurados y No Estructurados")
-        st.markdown("La telemetría HPC no proviene en un único formato homogéneo:")
+        st.subheader("Variedad: Qué formatos de datos existen")
+        st.markdown("La telemetría de supercómputo no proviene en un único formato homogéneo:")
 
         col_var1, col_var2, col_var3 = st.columns(3)
         with col_var1:
-            st.markdown("##### Estructurados (CSV / Tablas)")
-            st.caption("Series temporales con esquema estricto y tipos numéricos fijos:")
+            st.markdown("##### Estructurados (CSV)")
+            st.caption("Series temporales con esquema estricto y tipos fijos:")
             st.dataframe(df_historical[["gpu_id", "temperature", "power_w", "utilization"]].head(5), hide_index=True)
 
         with col_var2:
             st.markdown("##### Semiestructurados (JSON)")
-            st.caption("Objetos emitidos por APIs REST o exporters de DCGM con atributos flexibles:")
+            st.caption("Objetos emitidos por APIs REST o exporters de DCGM:")
             st.json(json_data[0])
 
         with col_var3:
-            st.markdown("##### No Estructurados (Logs)")
+            st.markdown("##### No Estructurados (Logs TXT)")
             st.caption("Líneas de syslog / dmesg / IPMI en texto plano:")
             st.text("\n".join([line.strip() for line in logs_lines[:5]]))
 
     with tab_ver:
-        st.subheader("Veracidad: Limpieza, Filtros y Rechazo de Datos Sospechosos")
+        st.subheader("Veracidad: Qué tan confiables son los datos")
         st.markdown(
             """
-            En entornos con miles de sensores de hardware ocurren fallos de medición, ruido electromagnético,
-            derivas por temperatura del silicio y pérdida de paquetes.
+            En entornos con miles de sensores electrónicos ocurren fallos de medición, ruido electromagnético
+            y derivas térmicas del silicio.
             
             **Principio de Veracidad en ECO-HPC:**
             El agente jamás asume que todo dato recibido es verídico. Si una lectura viola leyes físicas
-            (como 150 °C con 10 W de consumo) o contiene valores nulos, el sistema activa el estado
-            **DATOS NO CONFIABLES** y rehúsa tomar decisiones erróneas sobre el hardware.
+            (como 150 °C con 10 W de potencia) o contiene valores nulos, el sistema activa el estado
+            **DATOS NO CONFIABLES** y rechaza tomar decisiones automáticas sobre el hardware.
             """
         )
 
     with tab_val:
-        st.subheader("Valor: De los Datos a la Sostenibilidad y Eficiencia")
+        st.subheader("Valor: Para qué sirven los datos")
         st.markdown(
             """
-            El valor del Big Data no radica en acumular terabytes, sino en transformar percepciones en decisiones:
+            El valor del Big Data no radica en almacenar terabytes, sino en transformar percepciones en decisiones:
 
             ```text
             DATOS CRUDOS (Telemetría de potencia, temperatura y utilización)
@@ -708,7 +811,7 @@ elif menu_option == "6. Las 5 V del Big Data":
                  ↓
             ACCIÓN (Reducción de reloj por DVFS o aumento de refrigeración)
                  ↓
-            VALOR (Ahorro de energía en kWh, reducción de emisiones y prolongación de vida útil)
+            VALOR (Ahorro de energía en kWh, reducción de emisiones y preservación de equipamiento)
             ```
             """
         )
@@ -718,41 +821,51 @@ elif menu_option == "6. Las 5 V del Big Data":
 # VISTA 7: CALIDAD DE DATOS & VERACIDAD
 # ==============================================================================
 elif menu_option == "7. Calidad de Datos & Veracidad":
-    st.markdown("<h1 class='main-title'>🛡️ Auditoría de Calidad de Datos y Veracidad</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 class='main-title'>🛡️ Calidad de Datos y Veracidad</h1>", unsafe_allow_html=True)
     st.markdown("<p class='sub-title'>Detección sistemática de anomalías, datos faltantes y violaciones de leyes físicas</p>", unsafe_allow_html=True)
 
     batch_audit = DataQualityAuditor.audit_batch(df_historical.to_dict(orient="records"))
 
     col_q1, col_q2, col_q3, col_q4 = st.columns(4)
-    col_q1.metric("Registros Totales", batch_audit["total_records"])
-    col_q2.metric("Registros Válidos", batch_audit["valid_records"])
-    col_q3.metric("Anomalías Detectadas", batch_audit["anomalous_records"], delta="Filtrados", delta_color="inverse")
-    col_q4.metric("Tasa de Veracidad", f"{batch_audit['veracity_rate_pct']} %")
+    col_q1.metric("REGISTROS", batch_audit["total_records"], help="Total de lecturas de telemetría analizadas")
+    col_q2.metric("VÁLIDOS", batch_audit["valid_records"], help="Lecturas que superaron todas las capas de calidad")
+    col_q3.metric("ANOMALÍAS", batch_audit["anomalous_records"], delta="Filtrados", delta_color="inverse", help="Lecturas con violaciones de rangos o leyes físicas")
+    col_q4.metric("FALTANTES", batch_audit["missing_records"], delta="Nulos/Incompletos", delta_color="inverse", help="Campos ausentes o valores nulos (NaN/None)")
+
+    st.caption(f"**Tasa Global de Veracidad:** {batch_audit['veracity_rate_pct']} % de percepciones conformes a especificación.")
 
     st.markdown("---")
-    st.subheader("Lista de Anomalías Registradas en el Dataset Centralizado")
+    st.markdown("#### Ejemplos de Anomalías Detectadas en el Dataset")
 
-    issues_unique = list(set(batch_audit["issues_list"]))
-    for iss in issues_unique:
-        st.warning(f"⚠️ {iss}")
+    col_ex1, col_ex2 = st.columns(2)
+    with col_ex1:
+        st.error("❌ **Ejemplo 1: Contradicción Física (GPU-12)**")
+        st.write("- **Lectura:** Temperatura = 150 °C, Potencia = 10 W, Utilización = 0%")
+        st.write("- **Diagnóstico:** Físicamente imposible disipar 150 °C con flujo de corriente despreciable.")
+        st.write("- **Acción:** Clasificación como `DATOS NO CONFIABLES` y emisión de ticket de mantenimiento.")
+    with col_ex2:
+        st.error("❌ **Ejemplo 2: Valores Nulos y Fuera de Rango (GPU-13)**")
+        st.write("- **Lectura:** Temperatura = `NaN`, Potencia = -45 W, Utilización = 108%")
+        st.write("- **Diagnóstico:** Campo ausente, potencia negativa imposible y porcentaje mayor a 100%.")
+        st.write("- **Acción:** Rechazo preventivo inmediato en la capa de auditoría.")
 
     st.markdown("---")
     st.markdown(
         """
         #### Clasificación de Sesgos y Fallas en Telemetría de Hardware
-        1. **Sesgo de Medición:** Diferencias en la calibración del conversor analógico-digital (ADC) del sensor térmico entre distintos fabricantes o lotes de GPUs.
-        2. **Sesgo de Muestreo:** Nodos de cómputo que reportan con frecuencias dispares (ej. cada 1s vs cada 5s) debido a saturación de la red de gestión OOB (Out-of-band).
-        3. **Deriva del Sensor (*Sensor Drift*):** Degradación física paulatina de los termistores por ciclos térmicos continuos, provocando lecturas que se desvían con el tiempo.
+        1. **Sesgo de Medición:** Desviaciones por calibración del conversor analógico-digital (ADC) entre distintos lotes.
+        2. **Sesgo de Muestreo:** Nodos que reportan a frecuencias dispares por congestión de la red de gestión OOB.
+        3. **Deriva del Sensor (*Sensor Drift*):** Degradación paulatina de termistores tras miles de ciclos térmicos.
         """
     )
 
 
 # ==============================================================================
-# VISTA 8: DEMOSTRACIÓN MAPREDUCE
+# VISTA 8: MAPREDUCE HISTÓRICO
 # ==============================================================================
-elif menu_option == "8. Demostración MapReduce":
-    st.markdown("<h1 class='main-title'>🔄 Demostración Didáctica de MapReduce</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='sub-title'>Procesamiento Batch distribuido simulado en Python: Map → Shuffle → Reduce</p>", unsafe_allow_html=True)
+elif menu_option == "8. MapReduce Histórico":
+    st.markdown("<h1 class='main-title'>🔄 Procesamiento Batch con MapReduce</h1>", unsafe_allow_html=True)
+    st.markdown("<p class='sub-title'>Demostración didáctica del paradigma distribuido en Python: Map → Shuffle → Reduce</p>", unsafe_allow_html=True)
 
     st.info(
         "💡 **Aclaración Académica:** Esta demostración implementa algorítmicamente el paradigma formal "
@@ -798,7 +911,8 @@ elif menu_option == "8. Demostración MapReduce":
     elif "4. Etapa REDUCE" in step_mr:
         st.markdown("##### Etapa REDUCE: Agregación Final")
         st.markdown(
-            "Cada *Reducer* computa la potencia media, la temperatura pico y la energía acumulada por GPU:"
+            "Cada *Reducer* computa la potencia media, la temperatura pico y la energía acumulada en kWh "
+            "(utilizando el intervalo real de 60 segundos por muestra periódica del dataset histórico: Horas = (Muestras * 60) / 3600):"
         )
         mr_df = pd.DataFrame(list(mr_data["reduce_results"].values()))
         st.dataframe(mr_df, use_container_width=True, hide_index=True)
@@ -814,16 +928,27 @@ elif menu_option == "9. Marco PEAS & Ficha Técnica":
     col_peas1, col_peas2 = st.columns(2)
 
     with col_peas1:
-        st.markdown("### Tabla PEAS Formal")
+        st.markdown("### Marco PEAS Formal")
         st.markdown(
             """
-            | Componente PEAS | Descripción en ECO-HPC |
-            | :--- | :--- |
-            | **Performance**<br>*(Rendimiento)* | Maximizar la eficiencia energética (reducción de kWh y disipación) garantizando temperaturas seguras (<85°C) y cumplimiento de SLAs. |
-            | **Environment**<br>*(Entorno)* | Clúster HPC con aceleradores GPU para cargas de Inteligencia Artificial (entrenamiento LLMs, inferencia). |
-            | **Actuators**<br>*(Actuadores)* | Ajuste de frecuencia de reloj (DVFS), escalado de ventiladores/bombas de refrigeración y limitación de carga en SLURM (**SIMULADOS**). |
-            | **Sensors**<br>*(Sensores)* | Telemetría M2M de temperatura (°C), potencia eléctrica (W), utilización (%), reloj (MHz) y estado de trabajo. |
-            """
+            <div class='peas-card'>
+                <h3>P — Performance (Medida de Rendimiento)</h3>
+                <p>Reducir consumo eléctrico y mantener condiciones térmicas seguras bajo el umbral configurado (&lt;85 °C en simulación).</p>
+            </div>
+            <div class='peas-card'>
+                <h3>E — Environment (Entorno)</h3>
+                <p>Entorno HPC con aceleradores GPU para cargas de Inteligencia Artificial.</p>
+            </div>
+            <div class='peas-card'>
+                <h3>A — Actuators (Actuadores)</h3>
+                <p>Acciones simuladas sobre frecuencia (DVFS), ventiladores de refrigeración y límites de carga en SLURM.</p>
+            </div>
+            <div class='peas-card'>
+                <h3>S — Sensors (Sensores)</h3>
+                <p>Telemetría continua de temperatura (°C), potencia (W), utilización (%), reloj (MHz) y estado de trabajo.</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
         )
 
     with col_peas2:
@@ -832,9 +957,11 @@ elif menu_option == "9. Marco PEAS & Ficha Técnica":
             """
             - **Nombre del Agente:** ECO-HPC Supervisor
             - **Tipo de Agente:** Reactivo basado en reglas con estado interno
+            - **Definición del Estado Interno:** El agente mantiene memoria histórica de decisiones, estados por GPU y acumuladores del sistema. Las reglas actuales evalúan de forma determinista la percepción presente y no utilizan aprendizaje automático ni dependen de la decisión anterior.
             - **Entorno de Operación:** HPC / Data Center de Inteligencia Artificial
             - **Escala Conceptual:** Hasta 1.024 GPUs
             - **Escala de Prototipo:** 16 GPUs simuladas en 4 nodos
+            - **Contexto Técnico:** Inspirado en aceleradores clase NVIDIA H100 SXM (con hasta 700 W configurables según especificaciones oficiales de NVIDIA; variantes PCIe operan en 300-350 W). El prototipo utiliza GPUs simuladas y no posee H100 físicas.
             - **Software Empleado:** Python 3.14, Streamlit, Pandas, Pytest
             - **Entrada de Datos:** CSV estructurado, JSON semiestructurado, logs de texto
             - **Salida:** Diagnóstico, estado del clúster, recomendación y acciones simuladas
@@ -848,12 +975,12 @@ elif menu_option == "9. Marco PEAS & Ficha Técnica":
 # ==============================================================================
 elif menu_option == "10. Arquitectura (Prototipo vs Escala)":
     st.markdown("<h1 class='main-title'>🏗️ Arquitectura del Sistema</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='sub-title'>Comparativa explícita: Arquitectura implementada en el prototipo vs Arquitectura conceptual de producción a escala</p>", unsafe_allow_html=True)
+    st.markdown("<p class='sub-title'>Diferenciación explícita: Prototipo Implementado vs Arquitectura Conceptual a Escala</p>", unsafe_allow_html=True)
 
     col_arch1, col_arch2 = st.columns(2)
 
     with col_arch1:
-        st.markdown("### Arquitectura Implementada (Prototipo)")
+        st.markdown("### Prototipo Implementado")
         st.success("🟢 **IMPLEMENTADO EN ESTE REPOSITORIO**")
         st.code(
             """
@@ -871,10 +998,10 @@ elif menu_option == "10. Arquitectura (Prototipo vs Escala)":
             """,
             language="text",
         )
-        st.caption("Diseñada para simplicidad, transparencia, portabilidad y defensa oral en 1 jornada.")
+        st.caption("Diseñado para simplicidad, transparencia, portabilidad y explicación directa.")
 
     with col_arch2:
-        st.markdown("### Arquitectura Conceptual (Producción a Escala)")
+        st.markdown("### Arquitectura Conceptual")
         st.info("🔵 **PROPUESTA CONCEPTUAL PARA 1.024 GPUs**")
         st.code(
             """
@@ -894,6 +1021,25 @@ elif menu_option == "10. Arquitectura (Prototipo vs Escala)":
         )
         st.caption("Propuesta conceptual que no requiere ser desplegada físicamente para cumplir el TP.")
 
+    st.markdown("---")
+    st.markdown("#### Matriz de Realidad y Transparencia Técnica")
+    st.markdown(
+        """
+        | Componente | Clasificación | Justificación y Alcance |
+        | :--- | :--- | :--- |
+        | **Código del Agente y Reglas** | **IMPLEMENTADO** | Ejecución real en Python determinista con evaluación de estados. |
+        | **Módulo de Calidad de Datos** | **IMPLEMENTADO** | Auditoría y filtros físicos ejecutados sobre datasets reales. |
+        | **Algoritmo MapReduce** | **IMPLEMENTADO** | Demostración funcional en Python de Map, Shuffle y Reduce. |
+        | **Dashboard Streamlit** | **IMPLEMENTADO** | Interfaz web interactiva con monitoreo e inspección en vivo. |
+        | **Suite de Pruebas Automatizadas** | **IMPLEMENTADO** | 24 pruebas unitarias, de integración y negativas en Pytest. |
+        | **Aceleradores GPU y Sensores** | **SIMULADO** | Modelado numérico sintético de hardware; no hay GPUs físicas. |
+        | **Acciones de Actuadores** | **SIMULADO** | Recomendaciones operativas; no envían comandos eléctricos reales. |
+        | **Clúster Masivo de 1.024 GPUs** | **CONCEPTUAL** | Escenario de referencia para dimensionamiento matemático de Big Data. |
+        | **Base de Datos NoSQL de Producción** | **CONCEPTUAL** | Solución recomendada para 88.4M escrituras/día sin despliegue físico. |
+        | **Planificador SLURM e Ingesta Kafka**| **CONCEPTUAL** | Componentes industriales justificados teóricamente en la arquitectura. |
+        """
+    )
+
 
 # ==============================================================================
 # VISTA 11: SOSTENIBILIDAD & NOSQL & LEY 25.326
@@ -905,20 +1051,37 @@ elif menu_option == "11. Sostenibilidad & NoSQL & Ley 25.326":
     tab_sos, tab_nosql, tab_ley = st.tabs(["Sostenibilidad Ambiental", "Justificación NoSQL", "Ley Nacional N.º 25.326"])
 
     with tab_sos:
-        st.subheader("Sostenibilidad Ambiental en HPC para IA")
+        st.subheader("¿Por qué hacemos esto?")
         st.markdown(
             """
-            El entrenamiento de modelos de lenguaje e inteligencia artificial consume megavatios-hora de energía.
+            <div class='flow-box' style='background-color:#f0fdf4; border: 2px solid #86efac; border-radius:8px; padding:1.2rem; margin-bottom:1.2rem;'>
+                <p style='margin:0; font-size:1.1rem; font-weight:700; color:#14532d; line-height:1.7;'>
+                    DATOS (Telemetría sensorial continua M2M de potencia y temperatura)<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+                    DECISIONES (Agente supervisor determinista basado en reglas)<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+                    EFICIENCIA (Modulación de reloj por DVFS y control térmico simulado)<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+                    SOSTENIBILIDAD (Ahorro de kWh, reducción de emisiones de CO₂ y preservación del hardware)
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            """
+            El entrenamiento y despliegue de modelos de inteligencia artificial consume grandes cantidades de energía.
             La relación entre IA, hardware y sostenibilidad en ECO-HPC se fundamenta en:
 
             1. **Evitar el Desperdicio en Reposo (*Idle Energy Waste*):**
                Cuando una GPU concluye un batch o espera transferencias de red, mantener el reloj a máxima
-               frecuencia genera un consumo parásito innecesario. La acción **AHORRAR** reduce el consumo en ~40%.
-            2. **Preservación Térmica y Ciclo de Vida del Silicio:**
-               Operar continuamente a >85°C acelera la electromigración del silicio. La acción **PROTEGER**
-               evita el recambio prematuro de hardware de alto costo ecológico y de manufactura.
+               frecuencia genera un consumo parásito evitable. La acción **AHORRAR** reduce el consumo en ~40%.
+            2. **Preservación Térmica en la Simulación:**
+               Operar continuamente por encima del umbral de protección configurado (85 °C en la simulación)
+               incrementa el estrés térmico del equipo. La acción **PROTEGER** evita operar el hardware en regímenes
+               térmicos severos de forma prolongada (85 °C no es un límite universal de toda GPU).
             3. **Reducción de Huella de Carbono Simulada:**
-               Cada kilovatio-hora ahorrado evita la emisión de gases de efecto invernadero según la matriz energética.
+               Cada kilovatio-hora ahorrado evita emisiones de gases de efecto invernadero según la matriz energética.
             """
         )
 
@@ -931,7 +1094,7 @@ elif menu_option == "11. Sostenibilidad & NoSQL & Ley 25.326":
             - **Patrón de Escritura Intensivo (*Append-heavy write throughput*):** 1.024 inserciones por segundo,
               88.4 millones de registros diarios. Las bases relacionales tradicionales colapsan por bloqueo de transacciones ACID y mantenimiento de índices B-Tree.
             - **Modelo Time-Series / Wide-Column NoSQL (ej. InfluxDB, TimescaleDB o Apache Cassandra):**
-              Estructura optimizada para series de tiempo, compresión por columnas y particionamiento por rangos temporales.
+               Estructura optimizada para series de tiempo, compresión por columnas y particionamiento por ventanas temporales.
             - **Escalabilidad Horizontal:** Capacidad de agregar nodos de almacenamiento sin detener el clúster.
             - **Políticas de Retención (*TTL - Time To Live*):** Roll-up automático de datos de 1 segundo a promedios de 1 minuto tras 30 días.
             """
@@ -941,14 +1104,14 @@ elif menu_option == "11. Sostenibilidad & NoSQL & Ley 25.326":
         st.subheader("Marco Legal: Ley N.º 25.326 de Protección de los Datos Personales (Argentina)")
         st.markdown(
             """
-            **Pregunta Clave de Examen:** *¿Los datos de telemetría de una GPU son datos personales?*
+            **Pregunta Técnica Fundamental:** *¿Los datos de telemetría de una GPU son datos personales?*
 
             - **Respuesta Técnica Corta:** **No en su estado crudo, pero SÍ cuando se correlacionan.**
             - **Fundamento Legal:** La telemetría pura (temperatura 60°C, potencia 350W) es métrica de máquina (M2M).
               Sin embargo, según el **Art. 2 de la Ley 25.326**, es dato personal toda información referida a personas físicas determinadas o determinables.
               Si los logs del gestor de trabajos (SLURM) asocian:
               `USUARIO (Legajo/Nombre) + TRABAJO + HORARIO + GPU ASIGNADA`
-              la telemetría permite inferir pautas de trabajo, productividad, horarios laborales o propiedad intelectual del investigador.
+              la telemetría permite inferir pautas de trabajo, horarios laborales o propiedad intelectual.
 
             #### Principios de Privacidad Aplicados a ECO-HPC:
             - **Minimización de Datos (Art. 4 Ley 25.326):** El agente supervisor sólo percibe identificadores de hardware (`GPU-01`, `nodo`), disociando por completo la identidad del usuario.
@@ -963,7 +1126,7 @@ elif menu_option == "11. Sostenibilidad & NoSQL & Ley 25.326":
 # ==============================================================================
 elif menu_option == "12. Fuentes & Evidencia Académica":
     st.markdown("<h1 class='main-title'>📚 Fuentes y Evidencia Académica</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='sub-title'>Registro riguroso de fuentes oficiales, bibliográficas y técnicas consultadas</p>", unsafe_allow_html=True)
+    st.markdown("<p class='sub-title'>Registro riguroso de fuentes oficiales, normativas legales y publicaciones científicas</p>", unsafe_allow_html=True)
 
     sources = [
         {

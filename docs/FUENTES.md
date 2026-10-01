@@ -80,7 +80,7 @@ Cada entrada clasifica el tipo de conocimiento según el **Control de Evidencia*
 * **Versión / Fecha:** Documentación técnica oficial (versión 2024 / arquitectura Hopper/Blackwell).
 * **URL Oficial:** `https://docs.nvidia.com/datacenter/dcgm/latest/`
 * **Qué dato o concepto respalda:**  
-  - Rangos térmicos y eléctricos reales de aceleradores de centro de datos: TDP (Thermal Design Power) de hasta 700 W en NVIDIA H100 PCIe/SXM.
+  - Rangos térmicos y eléctricos de aceleradores reales: H100 SXM cuenta con hasta 700 W configurables según especificaciones oficiales de NVIDIA, mientras que el formato PCIe opera típicamente en 300-350 W. Se utiliza como marco contextual; el prototipo utiliza GPUs simuladas y 700 W no es un límite universal de toda GPU.
   - Identificación de métricas de telemetría estándar: `gpu_utilization`, `temperature_gpu`, `power_draw`, `sm_clock_freq`, `fan_speed` y eventos de `thermal_violation_time`.
   - Mecanismos de protección por hardware: *Thermal Throttling*, modulación de estados de energía (*P-States*) y limitación de potencia por software (*power capping*).
 * **Nivel de Evidencia:** **HECHO CONFIRMADO.**
@@ -104,7 +104,7 @@ Cada entrada clasifica el tipo de conocimiento según el **Control de Evidencia*
 
 | Afirmación o Elemento del Proyecto | Clasificación de Evidencia | Justificación Metodológica |
 | :--- | :--- | :--- |
-| **Consumo eléctrico de GPUs H100 (~700W) y límites térmicos (85°C)** | **Hecho Confirmado** | Extraído directamente de la documentación oficial de arquitectura de hardware NVIDIA. |
+| **Especificación de H100 SXM (hasta 700 W configurables) y métricas DCGM** | **Hecho Confirmado** | Extraído directamente de la documentación oficial de arquitectura de hardware NVIDIA. |
 | **Definición de PEAS y taxonomía de agentes inteligentes** | **Hecho Confirmado** | Basado en el libro de texto canónico de Russell & Norvig (2020). |
 | **Criterio de dato personal por vinculación cruzada** | **Hecho Confirmado** | Conforme a la definición del Art. 2 de la Ley 25.326 y dictámenes de la AAIP. |
 | **Algoritmo de Map, Shuffle y Reduce** | **Hecho Confirmado** | Implementación fiel del paradigma matemático de Dean & Ghemawat (2004). |

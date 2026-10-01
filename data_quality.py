@@ -33,7 +33,7 @@ class DataQualityAuditor:
     
     Límites físicos admisibles configurados como parámetros del prototipo:
     - Temperatura: 15.0 °C a 105.0 °C (bajo 15°C es anómalo en datacenter; sobre 105°C supera límite de apagado por hardware).
-    - Potencia: 20.0 W a 900.0 W (valores negativos son errores eléctricos; >900W supera TDP de PCIe/SXM).
+    - Potencia: 20.0 W a 900.0 W (valores negativos son errores eléctricos; >900 W supera el consumo de aceleradores como H100 SXM con hasta 700 W configurables según documentación de NVIDIA).
     - Utilización: 0.0 % a 100.0 %.
     - Frecuencia: 200 MHz a 2800 MHz.
     - Refrigeración (cooling): 0.0 % a 100.0 %.

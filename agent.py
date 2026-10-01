@@ -100,7 +100,11 @@ class AgentDecision:
 class EcoHpcAgent:
     """
     Agente Supervisor de Eficiencia Energética y Seguridad Térmica para Clúster HPC.
-    Mantiene estado interno entre ciclos de sensado.
+    
+    Definición del Estado Interno:
+    El agente mantiene memoria histórica de decisiones, estados por GPU y acumuladores del sistema.
+    Las reglas actuales evalúan de forma determinista la percepción presente y no utilizan
+    aprendizaje automático ni dependen de la decisión anterior.
     """
 
     def __init__(self, agent_name: str = "ECO-HPC-SUPERVISOR"):

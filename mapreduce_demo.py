@@ -23,7 +23,7 @@ def map_function(record: Dict[str, Any]) -> Tuple[str, Dict[str, Any]]:
     Etapa MAP:
     Transforma un registro de telemetría en un par Clave-Valor.
     Clave: gpu_id
-    Valor: {power_w, temperature, utilization, count}
+    Valor: {timestamp, power_w, temperature, utilization, count}
     
     Ignora registros sin lectura válida de potencia para evitar contaminación.
     """
@@ -31,6 +31,7 @@ def map_function(record: Dict[str, Any]) -> Tuple[str, Dict[str, Any]]:
     pwr = record.get("power_w")
     temp = record.get("temperature")
     util = record.get("utilization", 0.0)
+    ts = record.get("timestamp")
 
     # Filtrado básico en etapa map para lecturas limpias
     pwr_val = float(pwr) if pwr is not None and pwr > 0 else 0.0
@@ -40,6 +41,7 @@ def map_function(record: Dict[str, Any]) -> Tuple[str, Dict[str, Any]]:
     return (
         gpu_id,
         {
+            "timestamp": ts,
             "power_w": pwr_val,
             "temperature": temp_val,
             "utilization": util_val,
@@ -61,7 +63,9 @@ def shuffle_function(mapped_pairs: List[Tuple[str, Dict[str, Any]]]) -> Dict[str
     return dict(grouped)
 
 
-def reduce_function(gpu_id: str, values: List[Dict[str, Any]]) -> Dict[str, Any]:
+def reduce_function(
+    gpu_id: str, values: List[Dict[str, Any]], sample_interval_seconds: float = 60.0
+) -> Dict[str, Any]:
     """
     Etapa REDUCE:
     Agrega la lista de valores asociados a una Clave única.
@@ -70,9 +74,10 @@ def reduce_function(gpu_id: str, values: List[Dict[str, Any]]) -> Dict[str, Any]
     - Consumo de potencia promedio (W)
     - Temperatura máxima registrada (°C)
     - Utilización promedio (%)
-    - Energía total estimada consumida (kWh simulados, asumiendo muestras de 1 minuto)
+    - Energía total estimada consumida (kWh calculados utilizando el intervalo temporal
+      real de 60 segundos representado por las marcas de tiempo consecutivas del dataset)
     """
-    valid_counts = [v["count"] for v in values if v["count"] > 0]
+    valid_counts = [v["count"] for v in values if v.get("count", 0) > 0]
     total_valid = sum(valid_counts)
 
     if total_valid == 0:
@@ -87,17 +92,19 @@ def reduce_function(gpu_id: str, values: List[Dict[str, Any]]) -> Dict[str, Any]
             "operational_profile": "DATOS INVÁLIDOS / SIN CONSUMO REGISTRADO",
         }
 
-    powers = [v["power_w"] for v in values if v["count"] > 0]
-    temps = [v["temperature"] for v in values if v["count"] > 0]
-    utils = [v["utilization"] for v in values if v["count"] > 0]
+    powers = [v["power_w"] for v in values if v.get("count", 0) > 0]
+    temps = [v["temperature"] for v in values if v.get("count", 0) > 0]
+    utils = [v["utilization"] for v in values if v.get("count", 0) > 0]
 
     avg_power = sum(powers) / len(powers)
     max_temp = max(temps) if temps else 0.0
     avg_util = sum(utils) / len(utils)
 
-    # Supuesto pedagógico: cada muestra representa un intervalo de 60 segundos
-    # kWh = (avg_power * horas) / 1000 = (avg_power * (total_valid * 60 / 3600)) / 1000
-    total_hours = (total_valid * 60.0) / 3600.0
+    # Intervalo temporal real del dataset histórico:
+    # Las marcas de tiempo consecutivas en telemetry.csv distan exactamente 60 segundos (1 minuto).
+    # Horas = (total_valid * 60.0 s) / 3600.0 s/h
+    # Energía (kWh) = (avg_power * Horas) / 1000.0
+    total_hours = (total_valid * sample_interval_seconds) / 3600.0
     total_kwh = (avg_power * total_hours) / 1000.0
 
     # Perfil operativo deducido del histórico

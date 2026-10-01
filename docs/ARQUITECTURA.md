@@ -84,13 +84,14 @@ El prototipo funcional opera mediante una canalización lineal determinista de d
    - Declara los umbrales de simulación de manera abierta y parametrizable (no como leyes físicas inmutables).
 4. **`agent.py` (Agente Inteligente con Estado Interno):**
    - Implementa el ciclo cognitivo formal: *Percepciones → Control de Calidad → Estado Interno → Decisión → Acción*.
+   - El agente mantiene memoria histórica de decisiones, estados por GPU y acumuladores del sistema. Las reglas actuales evalúan de forma determinista la percepción presente y no utilizan aprendizaje automático ni dependen de la decisión anterior.
    - Mantiene el historial de intervenciones y acumula el ahorro energético proyectado en kWh simulados.
 5. **`mapreduce_demo.py` (Motor de Análisis Batch):**
    - Implementa algorítmicamente en Python puro las etapas de `map_function`, `shuffle_function` y `reduce_function`.
-   - Calcula métricas consolidadas (promedio de potencia, temperatura máxima y energía total) sobre el histórico temporal.
+   - Calcula métricas consolidadas (promedio de potencia, temperatura máxima y energía total en kWh) utilizando el intervalo temporal real de 60 segundos entre muestras sucesivas del dataset histórico.
 6. **`app.py` (Interfaz de Usuario Streamlit):**
    - Presenta el sistema en 12 vistas estructuradas con navegación lateral.
-   - Incluye el **Modo Demo de Exposición** para guiar la presentación oral ante el tribunal.
+   - Incluye la **Demostración interactiva en 5 pasos** para la inspección y explicación en vivo del sistema.
 
 ---
 
@@ -99,7 +100,7 @@ El prototipo funcional opera mediante una canalización lineal determinista de d
 Para un entorno real de supercómputo que supervise 1.024 GPUs aceleradoras, la arquitectura física evolucionaría hacia un modelo distribuido de alta disponibilidad:
 
 ```text
-[ RACK 01 ] ... [ RACK 32 ]  (1.024 GPUs NVIDIA H100 en 128 Nodos)
+[ RACK 01 ] ... [ RACK 32 ]  (1.024 GPUs en 128 Nodos - contexto técnico clase NVIDIA H100 SXM)
        │              │
        ▼              ▼
 [ DAEMONS LOCALES DE TELEMETRÍA ] (NVIDIA DCGM Exporters / PromQL / Redfish BMC)
@@ -135,7 +136,7 @@ Para un entorno real de supercómputo que supervise 1.024 GPUs aceleradoras, la 
 * **Ingesta (Apache Kafka):** Garantiza desacoplamiento entre los 128 nodos emisores y los consumidores, ofreciendo *backpressure* y buffer persistente en disco ante ráfagas.
 * **Procesamiento en Tiempo Real (Apache Flink):** Permite evaluar ventanas temporales deslizantes (*sliding windows*) en milisegundos para detectar tendencias de incremento abrupto de temperatura antes de alcanzar el umbral crítico.
 * **Almacenamiento NoSQL Time-Series:** Permite almacenar 88,4 millones de lecturas diarias sin degradar los tiempos de inserción ni sufrir contención por bloqueos de transacciones ACID.
-* **Actuadores de Producción:** Integración con la API de *SLURM Workload Manager* para modular el despacho de nuevos trabajos y llamadas a la biblioteca `libnvidia-ml.so` para aplicar límites de potencia (*power cap* de 700 W a 500 W) de forma segura.
+* **Actuadores de Producción:** Integración con la API de *SLURM Workload Manager* para modular el despacho de nuevos trabajos y llamadas a la biblioteca `libnvidia-ml.so` para aplicar límites de potencia (*power cap*, ej. modular potencia en aceleradores tipo SXM de hasta 700 W hacia 500 W) de forma segura.
 
 ---
 
@@ -145,14 +146,14 @@ Esta matriz formaliza el estado de cada componente del proyecto, asegurando tota
 
 | Componente | Clasificación | Entorno / Ubicación | Descripción Técnica |
 | :--- | :--- | :--- | :--- |
-| **Agente Supervisor** | **Implementado** | `agent.py` | Clase `EcoHpcAgent` operativa con ciclo cognitivo formal y estado interno. |
+| **Agente Supervisor** | **Implementado** | `agent.py` | Clase `EcoHpcAgent` operativa con ciclo cognitivo formal y estado interno (memoria histórica y acumuladores). |
 | **Motor de Reglas** | **Implementado** | `rules.py` | Lógica determinista jerárquica con reglas de veracidad, protección, ahorro y régimen nominal. |
 | **Control de Calidad** | **Implementado** | `data_quality.py` | Auditoría de tipos, valores nulos, límites físicos y consistencia lógica cruzada. |
-| **Demostración MapReduce**| **Implementado** | `mapreduce_demo.py` | Implementación algorítmica pura de Map, Shuffle y Reduce para análisis batch. |
+| **Demostración MapReduce**| **Implementado** | `mapreduce_demo.py` | Implementación algorítmica pura de Map, Shuffle y Reduce para análisis batch sobre muestras de 60s. |
 | **Interfaz de Usuario** | **Implementado** | `app.py` | Dashboard interactivo profesional con 12 vistas y Modo Demo para exposición oral. |
 | **Suite de Pruebas** | **Implementado** | `tests/` | 24 pruebas automatizadas con Pytest (unitarias, integración de flujo y negativas). |
-| **Dataset de Telemetría**| **Simulado / Creado**| `data/` | CSV, JSON y logs generados con distribuciones realistas basadas en GPUs clase H100. |
-| **Aceleradores GPU** | **Simulado** | Software | Representación computacional de 16 GPUs en 4 nodos de cómputo. |
+| **Dataset de Telemetría**| **Simulado / Creado**| `data/` | CSV, JSON y logs generados con distribuciones realistas basadas en contexto técnico de hardware HPC. |
+| **Aceleradores GPU** | **Simulado** | Software | Representación computacional de 16 GPUs en 4 nodos de cómputo; el prototipo no posee GPUs H100 físicas. |
 | **Actuadores Físicos** | **Simulado** | Software | Órdenes simuladas (modulación DVFS, cooling, SLURM); sin manipulación de silicio real. |
 | **Clúster de 1.024 GPUs** | **Conceptual** | Diseño teórico | Supuesto de dimensionamiento calculado para ilustrar el volumen de datos en Big Data. |
 | **Base NoSQL Distribuida**| **Conceptual** | Diseño teórico | Justificación arquitectónica formal para producción a escala sin despliegue físico local. |

@@ -27,11 +27,11 @@ El presente proyecto integrador desarrolla **ECO-HPC**, un sistema compuesto por
 Para dotar al trabajo de rigor de ingeniería y viabilidad pedagógica, se establece una clara distinción entre la escala teórica de diseño y la implementación funcional:
 
 * **Escala Conceptual de Referencia (Producción a Escala):**  
-  Clúster HPC compuesto por **1.024 GPUs de clase centro de datos** (arquitectura representativa NVIDIA H100 PCIe / SXM), interconectadas en una topología distribuida de nodos de cómputo para cargas intensivas de entrenamiento e inferencia de IA.
+  Clúster HPC compuesto por **1.024 GPUs de clase centro de datos** (utilizando como contexto técnico de referencia la arquitectura NVIDIA H100 SXM con hasta 700 W configurables según documentación oficial de NVIDIA, mientras que variantes como PCIe operan típicamente en 300-350 W), interconectadas en una topología distribuida de nodos de cómputo para cargas intensivas de entrenamiento e inferencia de IA.
 * **Escala del Prototipo Funcional:**  
   Conjunto representativo de **16 GPUs simuladas** (identificadas como `GPU-01` a `GPU-16`), agrupadas en 4 nodos de cómputo (`node-01` a `node-04`). Esta escala permite una ejecución ágil, determinista y completamente auditable en un entorno local, manteniendo la misma estructura dimensional que un clúster a gran escala.
 
-> **Declaración de Transparencia Técnica:** El hardware de GPUs y los sensores utilizados en este prototipo son **SIMULADOS**. El prototipo no envía comandos de control de bajo nivel ni manipula voltaje físico en componentes electrónicos reales.
+> **Declaración de Contexto de Hardware y Transparencia Técnica:** Esta referencia a especificaciones industriales (ej. H100 SXM con hasta 700 W configurables) corresponde a hardware real utilizado como contexto técnico de referencia. El prototipo utiliza GPUs **SIMULADAS** y no posee hardware H100 físico. Asimismo, el valor de 700 W es un parámetro de simulación y no constituye un límite universal de toda GPU. El prototipo no envía comandos de control de bajo nivel ni manipula voltaje físico en componentes electrónicos reales.
 
 ---
 
@@ -48,7 +48,7 @@ Demostrar de forma unificada y coherente:
 7. Las implicancias de privacidad y protección de datos conforme a la **Ley Nacional N.º 25.326** de la República Argentina y la Resolución AAIP 47/2018.
 
 ### 3.2. Objetivo Práctico
-Construir y verificar una suite de software funcional en **Python, Pandas y Streamlit** que permita a un tribunal evaluador inspeccionar en tiempo real:
+Construir y verificar una suite de software funcional en **Python, Pandas y Streamlit** que permita inspeccionar en tiempo real:
 * ¿Qué está ocurriendo en el hardware?
 * ¿En qué estado interno se encuentra la GPU?
 * ¿Qué decisión operativa corresponde?
@@ -116,7 +116,7 @@ $$\text{DATO CRUDO} \longrightarrow \text{INFORMACIÓN} \longrightarrow \text{DE
 
 | Elemento PEAS | Especificación Técnica en ECO-HPC |
 | :--- | :--- |
-| **Performance Measure**<br>*(Medida de Rendimiento)* | Maximizar la eficiencia energética del clúster (reducción de consumo en Watts y kWh acumulados), preservando la integridad del silicio (mantener temperatura $<85\text{ }^\circ\text{C}$) y garantizando los acuerdos de nivel de servicio (SLAs) de los trabajos de IA. |
+| **Performance Measure**<br>*(Medida de Rendimiento)* | Maximizar la eficiencia energética del clúster (reducción de consumo en Watts y kWh acumulados), operando bajo el umbral de protección térmica configurado para el prototipo/simulación (temperatura $<85\text{ }^\circ\text{C}$, el cual no es un límite universal de toda GPU) y garantizando los acuerdos de nivel de servicio (SLAs) de los trabajos de IA. |
 | **Environment**<br>*(Entorno de Operación)* | Clúster HPC compuesto por aceleradores GPU interconectados ejecutando cargas de trabajo de IA (entrenamiento distribuido, inferencia de modelos masivos). Entorno parcialmente observable, determinista en reglas pero dinámico y continuo en lecturas. |
 | **Actuators**<br>*(Actuadores)* | Comandos operacionales de ajuste dinámico de frecuencia y voltaje (DVFS / P-States), control de ciclos de trabajo de refrigeración (duty-cycle de ventiladores/bombas) y modulación de cuotas de cómputo en SLURM (**SIMULADOS**). |
 | **Sensors**<br>*(Sensores)* | Telemetría M2M: Sensor de temperatura de unión (°C), sensor de potencia activa (W), monitor de tasa de utilización de núcleos de cómputo (%), frecuencia de reloj (MHz) y estado del trabajo. |
@@ -142,8 +142,9 @@ Para satisfacer el análisis batch histórico, el sistema incorpora una implemen
    $$\text{Shuffle} \longrightarrow \text{dict}\left[ \text{gpu\_id}, [\text{valor}_1, \text{valor}_2, \dots] \right]$$
 4. **Fase REDUCE:** Función de agregación matemática que reduce la lista de valores a métricas consolidadas:
    $$\text{AvgPower} = \frac{\sum \text{power\_w}}{N}, \quad \text{MaxTemp} = \max(\text{temperature}), \quad \text{Energía (kWh)} = \frac{\text{AvgPower} \times \text{Horas}}{1000}$$
+   Donde $\text{Horas} = \frac{N \times \Delta t}{3600}$, siendo $\Delta t = 60\text{ s}$ el intervalo temporal real representado por las marcas de tiempo consecutivas del dataset histórico.
 
-> **Aclaración Académica:** La demostración representa fielmente la semántica algorítmica del paradigma MapReduce en memoria local; no constituye un clúster físico Hadoop/Spark en producción.
+> **Aclaración Académica:** Mientras que el escenario conceptual de streaming para el agente considera 1 lectura/segundo para baja latencia, el dataset histórico del prototipo representa muestras periódicas consolidadas cada 60 segundos (1 minuto), tal como se verifica en sus marcas de tiempo ISO. El cálculo de energía en MapReduce utiliza estrictamente este intervalo real de 60 segundos por muestra del dataset. La demostración representa fielmente la semántica algorítmica del paradigma MapReduce en memoria local; no constituye un clúster físico Hadoop/Spark en producción.
 
 ### 6.3. Justificación de Arquitectura NoSQL para Producción a Escala
 ¿Por qué una implementación real con 1.024 GPUs requiere almacenamiento **NoSQL** en lugar de una base de datos relacional (RDBMS)?
@@ -213,10 +214,14 @@ VARIABLES SENSORIALES (PERCEPCIONES)
 6. cooling:             Velocidad de ventiladores/bombas (%, float [0-100])
 7. job_status:          Estado de la tarea asignada (str)
 --------------------------------------------------------------------------------
-ESTADOS INTERNOS DEL AGENTE
+ESTADOS INTERNOS Y DEFINICIÓN DE MEMORIA
+El agente mantiene memoria histórica de decisiones, estados por GPU y acumuladores
+del sistema. Las reglas actuales evalúan de forma determinista la
+percepción presente y no utilizan aprendizaje automático ni dependen de la decisión anterior.
+Estados posibles:
 1. NORMAL:              Parámetros dentro de la envolvente de diseño segura.
 2. AHORRO:              GPU subutilizada manteniendo alto consumo innecesario.
-3. PROTECCION:          Temperatura o potencia crítica; riesgo físico de silicio.
+3. PROTECCION:          Umbral de protección alcanzado (85 °C configurado para la simulación).
 4. DATOS NO CONFIABLES: Detección de fallos de veracidad, lecturas nulas o ilógicas.
 --------------------------------------------------------------------------------
 ACCIONES OPERATIVAS (SIMULADAS)
@@ -323,5 +328,5 @@ En un contexto global donde los centros de datos de IA consumen un porcentaje cr
 2. **Agencia de Acceso a la Información Pública - AAIP (2018).** *Resolución 47/2018: Medidas de Seguridad Recomendadas para el Tratamiento y Conservación de los Datos Personales*. InfoLEG: `https://servicios.infoleg.gob.ar/infolegInternet/anexos/315000-319999/315998/norma.htm`.
 3. **Russell, S., & Norvig, P. (2020).** *Artificial Intelligence: A Modern Approach* (4th Edition). Pearson. Capítulos 2 (*Intelligent Agents*) y 3.
 4. **Dean, J., & Ghemawat, S. (2004).** *MapReduce: Simplified Data Processing on Large Clusters*. Communications of the ACM, 51(1), 107-113. Google Research.
-5. **NVIDIA Corporation (2024).** *Data Center GPU Manager (DCGM) & NVML API Architecture Guide*. NVIDIA Developer Zone: `https://docs.nvidia.com/datacenter/dcgm/latest/`.
+5. **NVIDIA Corporation (2024).** *Data Center GPU Manager (DCGM) & NVML API Architecture Guide*. NVIDIA Developer Zone: `https://docs.nvidia.com/datacenter/dcgm/latest/`. Especificaciones de hardware: H100 SXM con hasta 700 W configurables; variante PCIe opera típicamente en 300-350 W.
 6. **TOP500.org (2024).** *The Green500: Energy-Efficient Supercomputers List*. `https://www.top500.org/lists/green500/`.

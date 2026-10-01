@@ -38,10 +38,10 @@ class RuleThresholds:
     Parámetros configurables de simulación para el prototipo.
     Representan valores típicos de operación para aceleradores de cómputo HPC.
     """
-    TEMP_CRITICAL: float = 85.0     # °C - Límite de inicio de degradación térmica / thermal throttling
+    TEMP_CRITICAL: float = 85.0     # °C - Umbral de protección configurado para el prototipo/simulación (no es límite universal de toda GPU)
     TEMP_WARNING: float = 75.0      # °C - Alerta preventiva de temperatura elevada
     TEMP_SAFE: float = 70.0         # °C - Límite superior para operar con seguridad en perfiles de ahorro
-    POWER_HIGH: float = 650.0       # W  - Umbral de consumo elevado (cercano a TDP pico de 700W)
+    POWER_HIGH: float = 650.0       # W  - Umbral de consumo elevado (parámetro de simulación inspirado en aceleradores como H100 SXM con hasta 700 W configurables; no es límite universal de toda GPU)
     POWER_SAVING_TRIGGER: float = 300.0  # W - Consumo mínimo para considerar que hay derroche evitable
     UTIL_LOW: float = 30.0          # %  - Límite inferior de uso computacional para modo de ahorro
     UTIL_HIGH: float = 85.0         # %  - Carga computacional pesada (entrenamiento intensivo de IA)
@@ -63,8 +63,8 @@ def evaluate_rules(record: Dict[str, Any], quality: QualityResult) -> RuleEvalua
     Jerarquía de Decisión:
     1. Regla 0: Veracidad de Datos -> Si la lectura es anómala o inconsistente,
        el agente pasa a DATOS NO CONFIABLES y no emite órdenes automáticas sobre el hardware.
-    2. Regla 1: Protección Térmica y Eléctrica -> Si la temperatura es crítica o existe
-       riesgo inminente de sobrecalentamiento/sobreconsumo, prioriza la seguridad física.
+    2. Regla 1: Protección Térmica y Eléctrica -> Si la temperatura alcanza el umbral de protección
+       o existe sobreconsumo con alta utilización, prioriza la seguridad operativa del clúster.
     3. Regla 2: Oportunidad de Ahorro y Eficiencia -> Si el consumo/frecuencia es alto
        pero la GPU está subutilizada (idle/espera de I/O), reduce frecuencia (DVFS simulado).
     4. Regla 3: Régimen Normal -> Si opera dentro de los rangos equilibrados, mantiene
@@ -104,7 +104,7 @@ def evaluate_rules(record: Dict[str, Any], quality: QualityResult) -> RuleEvalua
             action=AgentAction.PROTEGER,
             reason=(
                 f"Condición térmica o eléctrica crítica detectada ({temp:.1f} °C, {power:.1f} W, {util:.1f}% util). "
-                f"Riesgo de daño de hardware o estrés térmico severo."
+                f"85 °C es un umbral de protección configurado para el prototipo/simulación. Se activa protocolo preventivo."
             ),
             action_details=(
                 "SIMULACIÓN: [1] Reducción forzada de reloj (DVFS cap a 1400 MHz). "
