@@ -73,15 +73,17 @@ $$\text{Volumen Diario} = N_{\text{GPU}} \times f_{\text{lecturas}} \times 86.40
   * Tamaño promedio por registro estructurado/JSON (metadata, timestamp, métricas térmicas, eléctricas y de carga) = $\approx 250\text{ bytes}$
   * **Volumen diario sin comprimir:** $88.473.600 \times 250\text{ bytes} \approx \mathbf{22,12\text{ GB/día}}$
   * **Volumen mensual (30 días):** $\approx \mathbf{663,5\text{ GB/mes}}$
-  * **Volumen anual:** $\approx \mathbf{8\text{ TB/año}}$ únicamente en telemetría sensorial de hardware.
+  * **Volumen anual estimado:** $\approx \mathbf{8,07\text{ TB/año}}$ únicamente en telemetría sensorial de hardware ($88.473.600 \times 365 \times 250\text{ bytes} \approx 8{,}07\text{ TB/año}$).
+
+> Estos valores constituyen una estimación teórica para dimensionar el escenario y no representan una medición física de un centro de datos real.
 
 * **Relación con el Prototipo:**  
   El prototipo genera y procesa lotes de telemetría de 16 GPUs. Esto reafirma el axioma: **prototipo pequeño ≠ volumen conceptual pequeño**.
 
 ### 4.2. Velocidad: Dualidad Streaming vs. Procesamiento Batch
 El sistema satisface dos demandas operativas con latencias dispares:
-1. **Baja Latencia / Streaming (< 1-2 segundos):**  
-   Requerida por el **Agente Supervisor ECO-HPC**. Los transistores de una GPU pueden alcanzar embalamiento térmico en cuestión de segundos ante un fallo en las bombas de refrigeración o un pico de corriente. La percepción, control de calidad y toma de decisión deben resolverse casi en tiempo real.
+1. **Baja Latencia en Streaming (Objetivo Arquitectónico < 1-2 s):**  
+   Requerida por el **Agente Supervisor ECO-HPC**. Los transistores de una GPU pueden alcanzar embalamiento térmico en cuestión de segundos ante un fallo en las bombas de refrigeración o un pico de corriente. La percepción, control de calidad y toma de decisión deben resolverse casi en tiempo real como supuesto de diseño.
 2. **Procesamiento Batch / Diferido (Horas / Días):**  
    Requerido para la agregación histórica mediante **MapReduce**. Permite calcular perfiles medios de disipación, auditoría energética acumulada en kilovatios-hora (kWh), factor de efectividad en el uso de energía (PUE) y detección de derivas a largo plazo en los sensores.
 
@@ -92,9 +94,18 @@ En un centro de datos HPC coexisten múltiples formatos de datos representados e
 * **No Estructurados (`data/logs.txt`):** Registros textuales emitidos por el kernel del sistema operativo, el gestor de trabajos (SLURM) y controladores de gestión del chasis (*IPMI/syslog*), que contienen eventos de fallo, advertencias de paridad de bus o desconexión de dispositivos.
 
 ### 4.4. Veracidad: Validación Física y Detección de Anomalías
-La veracidad es la dimensión crítica que determina si una percepción es confiable. En hardware real, los sensores pueden verse afectados por ruido eléctrico, caídas de tensión en buses I2C/SMBus o fallos del conversor ADC.
+La veracidad es la dimensión crítica que determina si una percepción es confiable. En hardware real, los sensores pueden verse afectados por ruido eléctrico, caídas de tensión en buses I2C/SMBus o fallos del conversor ADC. Asimismo, a nivel de redes de gestión pueden existir riesgos teóricos de duplicación de registros por retransmisiones.
 
-ECO-HPC incorpora un módulo formal de auditoría de veracidad (`data_quality.py`). Si un registro presenta temperaturas físicamente imposibles en silicio (ej. 150 °C) o contradicciones lógicas (102 °C con 0% de uso y 10 W de consumo), el dato no se procesa a ciegas: el agente entra en estado **DATOS NO CONFIABLES** y rechaza aplicar cambios sobre el clúster.
+ECO-HPC incorpora un módulo formal de auditoría de veracidad (`data_quality.py`). En el prototipo implementado, el control verifica estrictamente:
+1. Existencia y completitud de campos obligatorios.
+2. Detección de valores nulos o `NaN`.
+3. Conversión y coherencia de tipos numéricos.
+4. Cumplimiento de límites físicos admisibles en silicio ([15 °C, 105 °C], [20 W, 900 W], etc.).
+5. Consistencia lógica cruzada (ej. temperaturas extremas de 150 °C con 10 W de consumo y 0% de uso).
+
+Si un registro presenta anomalías, el dato no se procesa a ciegas: el agente entra en estado **DATOS NO CONFIABLES** y rechaza aplicar cambios automáticos sobre el clúster.
+
+*Aclaración de alcance sobre datos duplicados:* La detección y descarte de registros duplicados se contempla como un requerimiento conceptual de ingeniería para la ingesta distribuida a escala; no constituye una funcionalidad implementada en el módulo de calidad del prototipo local.
 
 ### 4.5. Valor: La Cadena de Transformación
 El Big Data no aporta valor por su acumulación cuantitativa, sino por su capacidad de habilitar intervenciones acertadas:
@@ -116,7 +127,7 @@ $$\text{DATO CRUDO} \longrightarrow \text{INFORMACIÓN} \longrightarrow \text{DE
 
 | Elemento PEAS | Especificación Técnica en ECO-HPC |
 | :--- | :--- |
-| **Performance Measure**<br>*(Medida de Rendimiento)* | Maximizar la eficiencia energética del clúster (reducción de consumo en Watts y kWh acumulados), operando bajo el umbral de protección térmica configurado para el prototipo/simulación (temperatura $<85\text{ }^\circ\text{C}$, el cual no es un límite universal de toda GPU) y garantizando los acuerdos de nivel de servicio (SLAs) de los trabajos de IA. |
+| **Performance Measure**<br>*(Medida de Rendimiento)* | Criterio de rendimiento orientado al objetivo arquitectónico de maximizar la eficiencia energética (reducción de Watts y kWh acumulados en la simulación), procurando operar bajo el umbral preventivo configurado para el prototipo (temperatura $<85\text{ }^\circ\text{C}$, parámetro de simulación y no límite universal de toda GPU) con la meta de mitigar el impacto sobre los acuerdos de nivel de servicio (SLAs) de los trabajos de IA. Describe el objetivo de optimización del agente y no constituye una garantía operativa de cumplimiento de SLA ni de ahorro físico. |
 | **Environment**<br>*(Entorno de Operación)* | Clúster HPC compuesto por aceleradores GPU interconectados ejecutando cargas de trabajo de IA (entrenamiento distribuido, inferencia de modelos masivos). Entorno parcialmente observable, determinista en reglas pero dinámico y continuo en lecturas. |
 | **Actuators**<br>*(Actuadores)* | Comandos operacionales de ajuste dinámico de frecuencia y voltaje (DVFS / P-States), control de ciclos de trabajo de refrigeración (duty-cycle de ventiladores/bombas) y modulación de cuotas de cómputo en SLURM (**SIMULADOS**). |
 | **Sensors**<br>*(Sensores)* | Telemetría M2M: Sensor de temperatura de unión (°C), sensor de potencia activa (W), monitor de tasa de utilización de núcleos de cómputo (%), frecuencia de reloj (MHz) y estado del trabajo. |
@@ -133,7 +144,9 @@ El prototipo implementa una canalización lineal, desacoplada y verificada:
 4. **Visualización y Explotación:** `app.py` expone el estado y los resultados a través del dashboard interactivo.
 
 ### 6.2. Demostración Didáctica de MapReduce
-Para satisfacer el análisis batch histórico, el sistema incorpora una implementación en Python puro (`mapreduce_demo.py`) que ilustra las fases formales del paradigma de Dean & Ghemawat (Google, 2004):
+Para satisfacer el análisis batch histórico, el sistema incorpora una implementación pedagógica en memoria local (`mapreduce_demo.py`) desarrollada en Python puro, sin recurrir a clústeres distribuidos reales como Apache Hadoop o Apache Spark. La arquitectura distribuida pertenece exclusivamente al diseño conceptual propuesto para producción.
+
+La demostración ilustra las fases formales del paradigma de Dean & Ghemawat (Google, 2004):
 
 1. **Entrada:** Serie temporal de lecturas históricas multi-nodo.
 2. **Fase MAP:** Transforma cada registro en pares clave-valor:
@@ -152,14 +165,16 @@ Para satisfacer el análisis batch histórico, el sistema incorpora una implemen
 ### 6.3. Justificación de Arquitectura NoSQL para Producción a Escala
 ¿Por qué una implementación real con 1.024 GPUs requiere almacenamiento **NoSQL** en lugar de una base de datos relacional (RDBMS)?
 
-1. **Rendimiento de Escritura Intensiva (*Append-Heavy Throughput*):**  
+> Para una implementación productiva se propone una base NoSQL de tipo wide-column, tomando Apache Cassandra como tecnología de referencia. Esta arquitectura es conceptual y no se implementa en el prototipo.
+
+1. **Capacidad de Ingesta para Escritura Intensiva (*Append-Heavy Throughput*):**  
    Con 1.024 inserciones por segundo (más de 88 millones diarias), un motor relacional tradicional se degrada debido a los bloqueos de transacciones ACID y a la sobrecarga de rebalanceo de índices de árbol B (*B-Trees*).
-2. **Modelo de Series Temporales / Wide-Column NoSQL:**  
-   Bases de datos como **InfluxDB**, **TimescaleDB** o **Apache Cassandra** utilizan estructuras basadas en *Log-Structured Merge-trees (LSM-Trees)*, optimizadas para escrituras secuenciales ultrarrápidas y almacenamiento columnar que favorece una alta tasa de compresión (reduciendo el almacenamiento en un 70-80%).
-3. **Escalabilidad Horizontal y Tolerancia a Fallos:**  
-   Permite añadir nodos de base de datos de manera transparente mediante particionamiento (*sharding*) por rango temporal y clave de nodo.
+2. **Modelo Wide-Column y Estructura LSM-Tree:**  
+   Apache Cassandra organiza los datos mediante *Log-Structured Merge-trees (LSM-Trees)*, optimizados para absorber flujos continuos de escritura secuencial en memoria (*Memtable*) antes de volcarlos a disco (*SSTables*). Este diseño evita bloqueos por fila y permite particionar eficientemente por clave de acelerador y ventana temporal.
+3. **Escalabilidad Horizontal y Tolerancia a Fallos (Propuesta Conceptual):**  
+   Como propuesta conceptual para producción, la arquitectura distribuida peer-to-peer de Cassandra facilita incorporar nodos al clúster de almacenamiento de forma lineal y sin punto único de fallo (*SPOF*), constituyendo un objetivo arquitectónico para acompañar el crecimiento del centro de datos.
 4. **Políticas Nativas de Retención y Downsampling (*TTL*):**  
-   Facilita la consolidación automática: retener datos con resolución de 1 segundo durante 14 días y compactar a promedios de 1 minuto para análisis históricos de largo plazo.
+   Facilita la gestión del ciclo de vida de los datos: aplicar Time-To-Live (*TTL*) nativo para conservar lecturas de alta frecuencia (1 segundo) durante una ventana de análisis operativo y compactar registros históricos agregados para análisis de tendencias.
 
 ---
 
@@ -177,17 +192,22 @@ Es fundamental diferenciar conceptualmente tres tipos de desvíos:
 
 ### 7.2. Marco Jurídico: Ley Nacional N.º 25.326 y Res. AAIP 47/2018
 
-#### ¿La telemetría de una GPU es un dato personal?
-* **Regla General:** En su estado estrictamente aislado, una lectura como `GPU-07: Temp=89°C, Power=720W` es un dato técnico de máquina (M2M) y **NO constituye dato personal**.
-* **El Punto de Inflexión Legal (Art. 2 Ley 25.326):** La Ley 25.326 define como dato personal toda *"información de cualquier tipo referida a personas físicas o de existencia ideal determinadas o determinables"*.  
-  En un centro de cómputo, cuando la telemetría del hardware se cruza con las bases de datos del planificador de tareas (SLURM/PBS):
+#### Datos Personales y Datos Sensibles (Art. 2 de la Ley 25.326)
+* **Telemetría Técnica Simulada vs. Datos Sensibles:**  
+  El prototipo ECO-HPC opera exclusivamente con telemetría técnica simulada de hardware (temperatura, potencia, utilización y frecuencia). Por su diseño y alcance, **el prototipo no trata directamente datos sensibles**.
+* **Definición Legal de Datos Sensibles:**  
+  El Artículo 2 de la Ley N.º 25.326 define expresamente como datos sensibles a aquellos *"datos personales que revelan origen racial y étnico, opiniones políticas, convicciones religiosas, filosóficas o morales, afiliación sindical e información referente a la salud o a la vida sexual"*. La legislación argentina establece condiciones especiales y altamente restrictivas para su tratamiento, exigiendo consentimiento expreso o autorización legal expresa para su almacenamiento.
+* **Vínculo Contextual en un Entorno HPC Real:**  
+  En un centro de datos de supercómputo real, aunque una lectura física de hardware no sea en sí misma un dato personal, puede relacionarse con información personal según el contexto operativo:
   $$\text{ID DE USUARIO (Investigador)} + \text{SCRIPT/JOB} + \text{HORARIO} + \text{GPU ASIGNADA} + \text{TELEMETRÍA}$$
-  los patrones de consumo, la duración de cálculo y las horas de ejecución revelan de manera indirecta pautas de conducta, productividad laboral, horarios de actividad del investigador e inferencias sobre líneas de investigación bajo secreto o propiedad intelectual.
+  Si las cargas científicas procesan conjuntos de datos personales sensibles (ej. investigación médica con historias clínicas o estudios demográficos) o si los metadatos de ejecución revelan pautas horarias de trabajo, rendimiento o productividad del personal científico, el sistema se vincula con personas físicas determinadas o determinables.
+* **Principios Rectores Aplicables de Protección de Datos:**
+  1. **Principio de Calidad y Pertinencia (Art. 4, inc. 1):** Los datos recopilados deben ser ciertos, adecuados, pertinentes y no excesivos respecto de la finalidad para la que fueron obtenidos.
+  2. **Principio de Finalidad (Art. 4, inc. 3):** Los datos no pueden utilizarse para fines distintos o incompatibles con aquellos que justificaron su recolección (la supervisión técnica y térmica no debe emplearse con fines de vigilancia laboral sin base legal).
+  3. **Minimización de Datos:** En ECO-HPC, el ciclo de control del agente supervisor disocia activamente las identidades humanas, operando puramente sobre identificadores técnicos de silicio (`gpu_id`, `node`).
+  4. **Seguridad y Confidencialidad (Arts. 9 y 10 Ley 25.326 y Res. AAIP 47/2018):** Obligación de implementar medidas de seguridad técnicas (control de acceso RBAC, registro de eventos y cifrado en tránsito) para resguardar la integridad y confidencialidad de la información.
 
-#### Principios de Protección de Datos en ECO-HPC:
-1. **Minimización de Datos (Art. 4):** El agente supervisor sólo percibe y almacena métricas físicas e identificadores de hardware (`gpu_id`, `node`). Toda referencia a identidad de usuario o títulos de scripts es eliminada del flujo de telemetría operativa.
-2. **Principio de Finalidad (Art. 4, inc. 3):** Los datos recopilados se utilizan estrictamente para el control térmico, la seguridad de la infraestructura y la optimización energética, prohibiéndose su uso para vigilancia laboral o perfilamiento sin consentimiento.
-3. **Medidas de Seguridad (Art. 9 Ley 25.326 y Res. AAIP 47/2018):** Implementación de controles de acceso basados en roles (RBAC) para consultar el histórico y cifrado de los canales de telemetría en tránsito.
+> *Aclaración Metodológica:* El encuadre legal aquí presentado tiene fines puramente pedagógicos y analíticos dentro de la consigna académica, sin pretender constituir asesoramiento jurídico formal.
 
 ---
 
@@ -201,6 +221,8 @@ Nombre del Sistema:     ECO-HPC (Energy & Cooling Optimizer for HPC)
 Versión:                1.0 (Prototipo Académico Demostrable)
 Tipo de Agente:         Agente Reactivo Basado en Reglas con Estado Interno
 Arquitectura Cognitiva: Sensores -> Calidad de Datos -> Estado -> Decisión -> Acción
+Naturaleza Cognitiva:   Determinista; no utiliza Machine Learning ni ajuste de pesos;
+                        las reglas no se modifican automáticamente.
 --------------------------------------------------------------------------------
 ENTORNO Y ALCANCE
 Entorno:                Clúster HPC para Cargas de IA (Entrenamiento e Inferencia)
@@ -219,12 +241,12 @@ VARIABLES SENSORIALES (PERCEPCIONES)
 --------------------------------------------------------------------------------
 ESTADOS INTERNOS Y DEFINICIÓN DE MEMORIA
 El agente mantiene memoria histórica de decisiones, estados por GPU y acumuladores
-del sistema. Las reglas actuales evalúan de forma determinista la
-percepción presente y no utilizan aprendizaje automático ni dependen de la decisión anterior.
+del sistema. Las reglas actuales evalúan de forma determinista la percepción presente.
+Esta memoria no implica aprendizaje automático ni altera las reglas con el tiempo.
 Estados posibles:
 1. NORMAL:              Parámetros dentro de la envolvente de diseño segura.
 2. AHORRO:              GPU subutilizada manteniendo alto consumo innecesario.
-3. PROTECCION:          Umbral de protección alcanzado (85 °C configurado para la simulación).
+3. PROTECCION:          Umbral preventivo configurable del prototipo alcanzado (85 °C en simulación; no es límite universal).
 4. DATOS NO CONFIABLES: Detección de fallos de veracidad, lecturas nulas o ilógicas.
 --------------------------------------------------------------------------------
 ACCIONES OPERATIVAS (SIMULADAS)
@@ -285,8 +307,8 @@ Testing y QA:           Pytest 9.1.1 (24 pruebas unitarias, integración y negat
          ┌─────┴────────────────────────┐
          ▼                              ▼
   [ STREAM PROCESSING ]         [ ALMACENAMIENTO NOSQL ]
-   Apache Flink / Spark          Time-Series (TimescaleDB / InfluxDB)
-   (Inferencia Agente < 1s)      (Particionado temporal y retención TTL)
+   Apache Flink / Spark          Apache Cassandra (Wide-Column)
+   (Inferencia Agente < 1s)      (Partición por GPU y retención TTL)
          │                              │
          ▼                              ▼
   [ CONTROLADORES DEL HARDWARE ] [ ANALÍTICA BATCH HISTÓRICA ]
@@ -301,13 +323,13 @@ Testing y QA:           Pytest 9.1.1 (24 pruebas unitarias, integración y negat
 
 | Componente | Clasificación Técnica | Justificación Metodológica |
 | :--- | :--- | :--- |
-| **Dataset de Telemetría** | **Simulado / Implementado** | Generado mediante scripts reproducibles (`simulator.py`) basados en perfiles reales de hardware H100. |
+| **Dataset de Telemetría** | **Simulado / Implementado** | Generado mediante scripts reproducibles (`simulator.py`) basados en perfiles de hardware HPC. |
 | **Aceleradores GPU** | **Simulado** | Se simula el comportamiento de 16 GPUs sin requerir hardware físico de supercómputo. |
 | **Sensores de Hardware** | **Simulado** | Vectores de percepción sintetizados con modelos térmicos y de carga de cómputo. |
-| **Agente ECO-HPC** | **Realmente Implementado** | Código Python operativo (`agent.py`) con control de estado y evaluación jerárquica de reglas. |
-| **Motor de Reglas** | **Realmente Implementado** | Lógica determinista implementada en `rules.py` con umbrales declarados de simulación. |
+| **Agente ECO-HPC** | **Realmente Implementado** | Código Python operativo (`agent.py`) con control de estado y evaluación jerárquica de reglas deterministas. |
+| **Motor de Reglas** | **Realmente Implementado** | Lógica determinista implementada en `rules.py` con umbrales configurables de simulación. |
 | **Actuadores** | **Simulado** | Las órdenes operativas se formulan y explican, pero no actúan sobre registros de voltaje físico. |
-| **Demostración MapReduce** | **Realmente Implementada** | Pipeline algorítmico completo (Map, Shuffle, Reduce) ejecutado en memoria con Python puro. |
+| **Demostración MapReduce** | **Realmente Implementada** | Pipeline algorítmico local (Map, Shuffle, Reduce) ejecutado en memoria con Python puro. |
 | **Base de Datos NoSQL** | **Propuesta Conceptual** | Justificación formal de arquitectura para producción; no se despliega un clúster distribuido en la demo. |
 | **Clúster de 1.024 GPUs** | **Escenario Conceptual** | Supuesto dimensionado matemáticamente para ilustrar el volumen del Big Data. |
 | **Cálculo de Sostenibilidad** | **Modelo Implementado** | Estimación algorítmica de kilovatios-hora ahorrados y reducción simulada de emisiones. |
@@ -318,18 +340,23 @@ Testing y QA:           Pytest 9.1.1 (24 pruebas unitarias, integración y negat
 
 El proyecto **ECO-HPC** demuestra de manera rigurosa y verificable que el Big Data constituye la infraestructura imprescindible sobre la cual se cimienta la Inteligencia Artificial sostenible:
 1. Sin un flujo continuo de telemetría (**Volumen, Velocidad y Variedad**), el sistema carece de capacidad de observación.
-2. Sin un filtro estricto de **Veracidad**, el agente inteligente corre el riesgo de tomar decisiones catastróficas inducidas por fallos de sensado.
+2. Sin un filtro estricto de **Veracidad**, el agente supervisor correría el riesgo de adoptar decisiones operativas erróneas o contraproducentes inducidas por fallos de sensado.
 3. El **Valor** se materializa cuando un agente basado en reglas, transparente y explicable, interviene proactivamente para mitigar el derroche energético y extender el ciclo de vida del hardware.
 
-En un contexto global donde los centros de datos de IA consumen un porcentaje creciente de la matriz eléctrica mundial, arquitecturas de supervisión como ECO-HPC son indispensables para transformar el paradigma computacional hacia un horizonte de **eficiencia energética y sostenibilidad ambiental**.
+En un contexto global donde los centros de datos de IA demandan una porción relevante de recursos energéticos, arquitecturas de supervisión como ECO-HPC son indispensables para orientar el cómputo masivo hacia un horizonte de **eficiencia energética y sostenibilidad ambiental**.
 
 ---
 
 ## 12. Bibliografía y Fuentes Consultadas
 
-1. **Honorable Congreso de la Nación Argentina (2000).** *Ley N.º 25.326 de Protección de los Datos Personales*. Promulgada por Decreto 1616/2000. Texto actualizado oficial en InfoLEG: `https://servicios.infoleg.gob.ar/infolegInternet/anexos/60000-64999/64790/norma.htm`.
-2. **Agencia de Acceso a la Información Pública - AAIP (2018).** *Resolución 47/2018: Medidas de Seguridad Recomendadas para el Tratamiento y Conservación de los Datos Personales*. InfoLEG: `https://servicios.infoleg.gob.ar/infolegInternet/anexos/315000-319999/315998/norma.htm`.
-3. **Russell, S., & Norvig, P. (2020).** *Artificial Intelligence: A Modern Approach* (4th Edition). Pearson. Capítulos 2 (*Intelligent Agents*) y 3.
-4. **Dean, J., & Ghemawat, S. (2004).** *MapReduce: Simplified Data Processing on Large Clusters*. Communications of the ACM, 51(1), 107-113. Google Research.
-5. **NVIDIA Corporation (2024).** *Data Center GPU Manager (DCGM) & NVML API Architecture Guide*. NVIDIA Developer Zone: `https://docs.nvidia.com/datacenter/dcgm/latest/`. Especificaciones de hardware: H100 SXM con hasta 700 W configurables; variante PCIe opera típicamente en 300-350 W.
-6. **TOP500.org (2024).** *The Green500: Energy-Efficient Supercomputers List*. `https://www.top500.org/lists/green500/`.
+### Bibliografía Académica
+1. **Joyanes Aguilar, L. (2013).** *Big Data: Análisis de grandes volúmenes de datos en organizaciones*. Alfaomega.
+2. **Russell, S. J. & Norvig, P. (2021).** *Artificial Intelligence: A Modern Approach*. Pearson.
+3. **Dean, J. & Ghemawat, S. (2004).** *MapReduce: Simplified Data Processing on Large Clusters*. Communications of the ACM, 51(1), 107-113. Google Research.
+
+### Fuentes Normativas y Documentación Técnica Oficial
+4. **Honorable Congreso de la Nación Argentina (2000).** *Ley N.º 25.326 de Protección de los Datos Personales*. Promulgada por Decreto 1616/2000. Texto oficial en InfoLEG: `https://servicios.infoleg.gob.ar/infolegInternet/anexos/60000-64999/64790/norma.htm`.
+5. **Agencia de Acceso a la Información Pública - AAIP (2018).** *Resolución 47/2018: Medidas de Seguridad Recomendadas para el Tratamiento y Conservación de los Datos Personales*. InfoLEG: `https://servicios.infoleg.gob.ar/infolegInternet/anexos/315000-319999/315998/norma.htm`.
+6. **Apache Software Foundation (2024).** *Apache Cassandra Documentation*. Apache Software Foundation: `https://cassandra.apache.org/doc/latest/`.
+7. **NVIDIA Corporation (2024).** *Data Center GPU Manager (DCGM) & NVML API Architecture Guide*. NVIDIA Developer Zone: `https://docs.nvidia.com/datacenter/dcgm/latest/`. Contexto de hardware: H100 SXM con hasta 700 W configurables; variante PCIe opera típicamente en 300-350 W.
+8. **TOP500.org (2024).** *The Green500: Energy-Efficient Supercomputers List*. `https://www.top500.org/lists/green500/`.
