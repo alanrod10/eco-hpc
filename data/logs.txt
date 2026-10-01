@@ -1,0 +1,160 @@
+2026-10-01T12:00:00Z node-01 dcgm[1042]: [INFO] GPU-01: Telemetry normal. T=64.1C, P=332.8W, Util=67.5%, Freq=1757MHz
+2026-10-01T12:00:00Z node-01 dcgm[1042]: [INFO] GPU-02: Telemetry normal. T=59.8C, P=411.5W, Util=72.9%, Freq=1808MHz
+2026-10-01T12:00:00Z node-01 dcgm[1042]: [INFO] GPU-03: Telemetry normal. T=59.7C, P=355.6W, Util=74.0%, Freq=1843MHz
+2026-10-01T12:00:00Z node-01 slurm_node[890]: [INFO] GPU-04: Workload low activity (14.0%). Clock lock at 1950MHz. Inefficient power state.
+2026-10-01T12:00:00Z node-02 dcgm[1042]: [INFO] GPU-05: Telemetry normal. T=64.2C, P=389.9W, Util=66.4%, Freq=1850MHz
+2026-10-01T12:00:00Z node-02 dcgm[1042]: [INFO] GPU-06: Telemetry normal. T=66.0C, P=413.5W, Util=65.2%, Freq=1808MHz
+2026-10-01T12:00:00Z node-02 dcgm[1042]: [ALERT] GPU-07: Thermal junction limit approaching (89.0C > 85.0C). High draw: 720.0W. Throttling flag set.
+2026-10-01T12:00:00Z node-02 dcgm[1042]: [INFO] GPU-08: Telemetry normal. T=60.2C, P=435.3W, Util=68.7%, Freq=1723MHz
+2026-10-01T12:00:00Z node-03 dcgm[1042]: [INFO] GPU-09: Telemetry normal. T=61.9C, P=367.8W, Util=67.3%, Freq=1711MHz
+2026-10-01T12:00:00Z node-03 dcgm[1042]: [INFO] GPU-10: Telemetry normal. T=63.3C, P=437.0W, Util=69.6%, Freq=1841MHz
+2026-10-01T12:00:00Z node-03 slurm_node[890]: [INFO] GPU-11: Workload low activity (18.0%). Clock lock at 1900MHz. Inefficient power state.
+2026-10-01T12:00:00Z node-03 dcgm[1042]: [WARN] GPU-12: Sensor thermistor #0 reported 150.0C while draw is 10.0W. Physical check required.
+2026-10-01T12:00:00Z node-04 kernel: [ERR] GPU-13: Null pointer or parity mismatch in PCIe NVLINK telemetry buffer. PWR=-45.0W, UTIL=108.0%
+2026-10-01T12:00:00Z node-04 dcgm[1042]: [ALERT] GPU-14: Thermal junction limit approaching (92.5C > 85.0C). High draw: 745.0W. Throttling flag set.
+2026-10-01T12:00:00Z node-04 dcgm[1042]: [INFO] GPU-15: Telemetry normal. T=64.0C, P=427.4W, Util=69.2%, Freq=1749MHz
+2026-10-01T12:00:00Z node-04 dcgm[1042]: [INFO] GPU-16: Telemetry normal. T=59.4C, P=355.1W, Util=67.8%, Freq=1720MHz
+2026-10-01T12:01:00Z node-01 dcgm[1042]: [INFO] GPU-01: Telemetry normal. T=59.3C, P=406.6W, Util=64.9%, Freq=1818MHz
+2026-10-01T12:01:00Z node-01 dcgm[1042]: [INFO] GPU-02: Telemetry normal. T=64.6C, P=340.6W, Util=74.0%, Freq=1704MHz
+2026-10-01T12:01:00Z node-01 dcgm[1042]: [INFO] GPU-03: Telemetry normal. T=63.6C, P=398.7W, Util=80.9%, Freq=1811MHz
+2026-10-01T12:01:00Z node-01 slurm_node[890]: [INFO] GPU-04: Workload low activity (14.0%). Clock lock at 1950MHz. Inefficient power state.
+2026-10-01T12:01:00Z node-02 dcgm[1042]: [INFO] GPU-05: Telemetry normal. T=59.5C, P=341.8W, Util=64.5%, Freq=1739MHz
+2026-10-01T12:01:00Z node-02 dcgm[1042]: [INFO] GPU-06: Telemetry normal. T=63.1C, P=384.6W, Util=77.4%, Freq=1829MHz
+2026-10-01T12:01:00Z node-02 dcgm[1042]: [ALERT] GPU-07: Thermal junction limit approaching (89.0C > 85.0C). High draw: 720.0W. Throttling flag set.
+2026-10-01T12:01:00Z node-02 dcgm[1042]: [INFO] GPU-08: Telemetry normal. T=60.5C, P=337.0W, Util=73.6%, Freq=1747MHz
+2026-10-01T12:01:00Z node-03 dcgm[1042]: [INFO] GPU-09: Telemetry normal. T=65.7C, P=362.6W, Util=79.8%, Freq=1833MHz
+2026-10-01T12:01:00Z node-03 dcgm[1042]: [INFO] GPU-10: Telemetry normal. T=66.9C, P=419.5W, Util=75.1%, Freq=1715MHz
+2026-10-01T12:01:00Z node-03 slurm_node[890]: [INFO] GPU-11: Workload low activity (18.0%). Clock lock at 1900MHz. Inefficient power state.
+2026-10-01T12:01:00Z node-03 dcgm[1042]: [WARN] GPU-12: Sensor thermistor #0 reported 150.0C while draw is 10.0W. Physical check required.
+2026-10-01T12:01:00Z node-04 kernel: [ERR] GPU-13: Null pointer or parity mismatch in PCIe NVLINK telemetry buffer. PWR=-45.0W, UTIL=108.0%
+2026-10-01T12:01:00Z node-04 dcgm[1042]: [ALERT] GPU-14: Thermal junction limit approaching (92.5C > 85.0C). High draw: 745.0W. Throttling flag set.
+2026-10-01T12:01:00Z node-04 dcgm[1042]: [INFO] GPU-15: Telemetry normal. T=64.0C, P=416.6W, Util=80.0%, Freq=1784MHz
+2026-10-01T12:01:00Z node-04 dcgm[1042]: [INFO] GPU-16: Telemetry normal. T=64.3C, P=378.3W, Util=64.5%, Freq=1720MHz
+2026-10-01T12:02:00Z node-01 dcgm[1042]: [INFO] GPU-01: Telemetry normal. T=62.3C, P=389.6W, Util=79.2%, Freq=1745MHz
+2026-10-01T12:02:00Z node-01 dcgm[1042]: [INFO] GPU-02: Telemetry normal. T=61.3C, P=354.7W, Util=73.4%, Freq=1725MHz
+2026-10-01T12:02:00Z node-01 dcgm[1042]: [INFO] GPU-03: Telemetry normal. T=63.1C, P=438.8W, Util=75.9%, Freq=1796MHz
+2026-10-01T12:02:00Z node-01 slurm_node[890]: [INFO] GPU-04: Workload low activity (14.0%). Clock lock at 1950MHz. Inefficient power state.
+2026-10-01T12:02:00Z node-02 dcgm[1042]: [INFO] GPU-05: Telemetry normal. T=65.1C, P=403.7W, Util=69.2%, Freq=1786MHz
+2026-10-01T12:02:00Z node-02 dcgm[1042]: [INFO] GPU-06: Telemetry normal. T=63.9C, P=342.3W, Util=63.4%, Freq=1724MHz
+2026-10-01T12:02:00Z node-02 dcgm[1042]: [ALERT] GPU-07: Thermal junction limit approaching (89.0C > 85.0C). High draw: 720.0W. Throttling flag set.
+2026-10-01T12:02:00Z node-02 dcgm[1042]: [INFO] GPU-08: Telemetry normal. T=61.5C, P=433.7W, Util=78.4%, Freq=1774MHz
+2026-10-01T12:02:00Z node-03 dcgm[1042]: [INFO] GPU-09: Telemetry normal. T=62.1C, P=382.5W, Util=80.3%, Freq=1748MHz
+2026-10-01T12:02:00Z node-03 dcgm[1042]: [INFO] GPU-10: Telemetry normal. T=65.0C, P=415.4W, Util=62.9%, Freq=1811MHz
+2026-10-01T12:02:00Z node-03 slurm_node[890]: [INFO] GPU-11: Workload low activity (18.0%). Clock lock at 1900MHz. Inefficient power state.
+2026-10-01T12:02:00Z node-03 dcgm[1042]: [WARN] GPU-12: Sensor thermistor #0 reported 150.0C while draw is 10.0W. Physical check required.
+2026-10-01T12:02:00Z node-04 kernel: [ERR] GPU-13: Null pointer or parity mismatch in PCIe NVLINK telemetry buffer. PWR=-45.0W, UTIL=108.0%
+2026-10-01T12:02:00Z node-04 dcgm[1042]: [ALERT] GPU-14: Thermal junction limit approaching (92.5C > 85.0C). High draw: 745.0W. Throttling flag set.
+2026-10-01T12:02:00Z node-04 dcgm[1042]: [INFO] GPU-15: Telemetry normal. T=64.9C, P=406.4W, Util=78.9%, Freq=1784MHz
+2026-10-01T12:02:00Z node-04 dcgm[1042]: [INFO] GPU-16: Telemetry normal. T=62.8C, P=379.9W, Util=78.0%, Freq=1738MHz
+2026-10-01T12:03:00Z node-01 dcgm[1042]: [INFO] GPU-01: Telemetry normal. T=61.2C, P=383.7W, Util=63.6%, Freq=1786MHz
+2026-10-01T12:03:00Z node-01 dcgm[1042]: [INFO] GPU-02: Telemetry normal. T=62.9C, P=342.6W, Util=78.2%, Freq=1779MHz
+2026-10-01T12:03:00Z node-01 dcgm[1042]: [INFO] GPU-03: Telemetry normal. T=64.2C, P=428.9W, Util=63.3%, Freq=1769MHz
+2026-10-01T12:03:00Z node-01 slurm_node[890]: [INFO] GPU-04: Workload low activity (14.0%). Clock lock at 1950MHz. Inefficient power state.
+2026-10-01T12:03:00Z node-02 dcgm[1042]: [INFO] GPU-05: Telemetry normal. T=64.9C, P=353.2W, Util=79.0%, Freq=1809MHz
+2026-10-01T12:03:00Z node-02 dcgm[1042]: [INFO] GPU-06: Telemetry normal. T=62.3C, P=407.0W, Util=80.5%, Freq=1744MHz
+2026-10-01T12:03:00Z node-02 dcgm[1042]: [ALERT] GPU-07: Thermal junction limit approaching (89.0C > 85.0C). High draw: 720.0W. Throttling flag set.
+2026-10-01T12:03:00Z node-02 dcgm[1042]: [INFO] GPU-08: Telemetry normal. T=61.9C, P=409.8W, Util=68.4%, Freq=1805MHz
+2026-10-01T12:03:00Z node-03 dcgm[1042]: [INFO] GPU-09: Telemetry normal. T=65.0C, P=364.9W, Util=69.7%, Freq=1835MHz
+2026-10-01T12:03:00Z node-03 dcgm[1042]: [INFO] GPU-10: Telemetry normal. T=65.9C, P=410.5W, Util=78.2%, Freq=1765MHz
+2026-10-01T12:03:00Z node-03 slurm_node[890]: [INFO] GPU-11: Workload low activity (18.0%). Clock lock at 1900MHz. Inefficient power state.
+2026-10-01T12:03:00Z node-03 dcgm[1042]: [WARN] GPU-12: Sensor thermistor #0 reported 150.0C while draw is 10.0W. Physical check required.
+2026-10-01T12:03:00Z node-04 kernel: [ERR] GPU-13: Null pointer or parity mismatch in PCIe NVLINK telemetry buffer. PWR=-45.0W, UTIL=108.0%
+2026-10-01T12:03:00Z node-04 dcgm[1042]: [ALERT] GPU-14: Thermal junction limit approaching (92.5C > 85.0C). High draw: 745.0W. Throttling flag set.
+2026-10-01T12:03:00Z node-04 dcgm[1042]: [INFO] GPU-15: Telemetry normal. T=59.5C, P=430.1W, Util=80.2%, Freq=1789MHz
+2026-10-01T12:03:00Z node-04 dcgm[1042]: [INFO] GPU-16: Telemetry normal. T=65.3C, P=357.5W, Util=76.2%, Freq=1808MHz
+2026-10-01T12:04:00Z node-01 dcgm[1042]: [INFO] GPU-01: Telemetry normal. T=66.1C, P=374.0W, Util=73.8%, Freq=1758MHz
+2026-10-01T12:04:00Z node-01 dcgm[1042]: [INFO] GPU-02: Telemetry normal. T=60.2C, P=389.2W, Util=78.0%, Freq=1707MHz
+2026-10-01T12:04:00Z node-01 dcgm[1042]: [INFO] GPU-03: Telemetry normal. T=61.6C, P=420.8W, Util=78.9%, Freq=1734MHz
+2026-10-01T12:04:00Z node-01 slurm_node[890]: [INFO] GPU-04: Workload low activity (14.0%). Clock lock at 1950MHz. Inefficient power state.
+2026-10-01T12:04:00Z node-02 dcgm[1042]: [INFO] GPU-05: Telemetry normal. T=61.4C, P=366.3W, Util=76.3%, Freq=1723MHz
+2026-10-01T12:04:00Z node-02 dcgm[1042]: [INFO] GPU-06: Telemetry normal. T=64.6C, P=369.6W, Util=71.4%, Freq=1719MHz
+2026-10-01T12:04:00Z node-02 dcgm[1042]: [ALERT] GPU-07: Thermal junction limit approaching (89.0C > 85.0C). High draw: 720.0W. Throttling flag set.
+2026-10-01T12:04:00Z node-02 dcgm[1042]: [INFO] GPU-08: Telemetry normal. T=64.6C, P=398.1W, Util=70.7%, Freq=1786MHz
+2026-10-01T12:04:00Z node-03 dcgm[1042]: [INFO] GPU-09: Telemetry normal. T=65.2C, P=360.3W, Util=64.1%, Freq=1790MHz
+2026-10-01T12:04:00Z node-03 dcgm[1042]: [INFO] GPU-10: Telemetry normal. T=63.9C, P=380.6W, Util=70.1%, Freq=1798MHz
+2026-10-01T12:04:00Z node-03 slurm_node[890]: [INFO] GPU-11: Workload low activity (18.0%). Clock lock at 1900MHz. Inefficient power state.
+2026-10-01T12:04:00Z node-03 dcgm[1042]: [WARN] GPU-12: Sensor thermistor #0 reported 150.0C while draw is 10.0W. Physical check required.
+2026-10-01T12:04:00Z node-04 kernel: [ERR] GPU-13: Null pointer or parity mismatch in PCIe NVLINK telemetry buffer. PWR=-45.0W, UTIL=108.0%
+2026-10-01T12:04:00Z node-04 dcgm[1042]: [ALERT] GPU-14: Thermal junction limit approaching (92.5C > 85.0C). High draw: 745.0W. Throttling flag set.
+2026-10-01T12:04:00Z node-04 dcgm[1042]: [INFO] GPU-15: Telemetry normal. T=65.2C, P=352.4W, Util=64.3%, Freq=1763MHz
+2026-10-01T12:04:00Z node-04 dcgm[1042]: [INFO] GPU-16: Telemetry normal. T=64.7C, P=407.6W, Util=68.3%, Freq=1772MHz
+2026-10-01T12:05:00Z node-01 dcgm[1042]: [INFO] GPU-01: Telemetry normal. T=61.8C, P=377.3W, Util=71.1%, Freq=1787MHz
+2026-10-01T12:05:00Z node-01 dcgm[1042]: [INFO] GPU-02: Telemetry normal. T=62.1C, P=397.7W, Util=77.9%, Freq=1706MHz
+2026-10-01T12:05:00Z node-01 dcgm[1042]: [INFO] GPU-03: Telemetry normal. T=59.0C, P=433.7W, Util=77.8%, Freq=1839MHz
+2026-10-01T12:05:00Z node-01 slurm_node[890]: [INFO] GPU-04: Workload low activity (14.0%). Clock lock at 1950MHz. Inefficient power state.
+2026-10-01T12:05:00Z node-02 dcgm[1042]: [INFO] GPU-05: Telemetry normal. T=65.5C, P=364.7W, Util=70.6%, Freq=1760MHz
+2026-10-01T12:05:00Z node-02 dcgm[1042]: [INFO] GPU-06: Telemetry normal. T=61.9C, P=435.4W, Util=62.7%, Freq=1795MHz
+2026-10-01T12:05:00Z node-02 dcgm[1042]: [ALERT] GPU-07: Thermal junction limit approaching (89.0C > 85.0C). High draw: 720.0W. Throttling flag set.
+2026-10-01T12:05:00Z node-02 dcgm[1042]: [INFO] GPU-08: Telemetry normal. T=61.8C, P=367.6W, Util=73.5%, Freq=1750MHz
+2026-10-01T12:05:00Z node-03 dcgm[1042]: [INFO] GPU-09: Telemetry normal. T=65.7C, P=430.6W, Util=62.7%, Freq=1785MHz
+2026-10-01T12:05:00Z node-03 dcgm[1042]: [INFO] GPU-10: Telemetry normal. T=63.6C, P=385.9W, Util=78.3%, Freq=1724MHz
+2026-10-01T12:05:00Z node-03 slurm_node[890]: [INFO] GPU-11: Workload low activity (18.0%). Clock lock at 1900MHz. Inefficient power state.
+2026-10-01T12:05:00Z node-03 dcgm[1042]: [WARN] GPU-12: Sensor thermistor #0 reported 150.0C while draw is 10.0W. Physical check required.
+2026-10-01T12:05:00Z node-04 kernel: [ERR] GPU-13: Null pointer or parity mismatch in PCIe NVLINK telemetry buffer. PWR=-45.0W, UTIL=108.0%
+2026-10-01T12:05:00Z node-04 dcgm[1042]: [ALERT] GPU-14: Thermal junction limit approaching (92.5C > 85.0C). High draw: 745.0W. Throttling flag set.
+2026-10-01T12:05:00Z node-04 dcgm[1042]: [INFO] GPU-15: Telemetry normal. T=66.0C, P=432.0W, Util=78.9%, Freq=1755MHz
+2026-10-01T12:05:00Z node-04 dcgm[1042]: [INFO] GPU-16: Telemetry normal. T=59.9C, P=375.8W, Util=69.1%, Freq=1773MHz
+2026-10-01T12:06:00Z node-01 dcgm[1042]: [INFO] GPU-01: Telemetry normal. T=63.4C, P=344.5W, Util=76.2%, Freq=1777MHz
+2026-10-01T12:06:00Z node-01 dcgm[1042]: [INFO] GPU-02: Telemetry normal. T=63.0C, P=408.5W, Util=70.7%, Freq=1739MHz
+2026-10-01T12:06:00Z node-01 dcgm[1042]: [INFO] GPU-03: Telemetry normal. T=66.0C, P=341.8W, Util=75.0%, Freq=1755MHz
+2026-10-01T12:06:00Z node-01 slurm_node[890]: [INFO] GPU-04: Workload low activity (14.0%). Clock lock at 1950MHz. Inefficient power state.
+2026-10-01T12:06:00Z node-02 dcgm[1042]: [INFO] GPU-05: Telemetry normal. T=63.5C, P=385.9W, Util=71.4%, Freq=1707MHz
+2026-10-01T12:06:00Z node-02 dcgm[1042]: [INFO] GPU-06: Telemetry normal. T=59.5C, P=384.9W, Util=65.3%, Freq=1732MHz
+2026-10-01T12:06:00Z node-02 dcgm[1042]: [ALERT] GPU-07: Thermal junction limit approaching (89.0C > 85.0C). High draw: 720.0W. Throttling flag set.
+2026-10-01T12:06:00Z node-02 dcgm[1042]: [INFO] GPU-08: Telemetry normal. T=63.4C, P=433.0W, Util=76.0%, Freq=1724MHz
+2026-10-01T12:06:00Z node-03 dcgm[1042]: [INFO] GPU-09: Telemetry normal. T=61.2C, P=401.3W, Util=80.7%, Freq=1846MHz
+2026-10-01T12:06:00Z node-03 dcgm[1042]: [INFO] GPU-10: Telemetry normal. T=64.1C, P=368.8W, Util=70.7%, Freq=1751MHz
+2026-10-01T12:06:00Z node-03 slurm_node[890]: [INFO] GPU-11: Workload low activity (18.0%). Clock lock at 1900MHz. Inefficient power state.
+2026-10-01T12:06:00Z node-03 dcgm[1042]: [WARN] GPU-12: Sensor thermistor #0 reported 150.0C while draw is 10.0W. Physical check required.
+2026-10-01T12:06:00Z node-04 kernel: [ERR] GPU-13: Null pointer or parity mismatch in PCIe NVLINK telemetry buffer. PWR=-45.0W, UTIL=108.0%
+2026-10-01T12:06:00Z node-04 dcgm[1042]: [ALERT] GPU-14: Thermal junction limit approaching (92.5C > 85.0C). High draw: 745.0W. Throttling flag set.
+2026-10-01T12:06:00Z node-04 dcgm[1042]: [INFO] GPU-15: Telemetry normal. T=65.5C, P=416.1W, Util=67.5%, Freq=1793MHz
+2026-10-01T12:06:00Z node-04 dcgm[1042]: [INFO] GPU-16: Telemetry normal. T=63.6C, P=394.9W, Util=75.9%, Freq=1729MHz
+2026-10-01T12:07:00Z node-01 dcgm[1042]: [INFO] GPU-01: Telemetry normal. T=59.5C, P=375.5W, Util=64.2%, Freq=1841MHz
+2026-10-01T12:07:00Z node-01 dcgm[1042]: [INFO] GPU-02: Telemetry normal. T=59.4C, P=334.9W, Util=76.7%, Freq=1739MHz
+2026-10-01T12:07:00Z node-01 dcgm[1042]: [INFO] GPU-03: Telemetry normal. T=59.4C, P=390.1W, Util=66.4%, Freq=1773MHz
+2026-10-01T12:07:00Z node-01 slurm_node[890]: [INFO] GPU-04: Workload low activity (14.0%). Clock lock at 1950MHz. Inefficient power state.
+2026-10-01T12:07:00Z node-02 dcgm[1042]: [INFO] GPU-05: Telemetry normal. T=62.2C, P=357.4W, Util=64.8%, Freq=1808MHz
+2026-10-01T12:07:00Z node-02 dcgm[1042]: [INFO] GPU-06: Telemetry normal. T=61.6C, P=369.4W, Util=75.1%, Freq=1713MHz
+2026-10-01T12:07:00Z node-02 dcgm[1042]: [ALERT] GPU-07: Thermal junction limit approaching (89.0C > 85.0C). High draw: 720.0W. Throttling flag set.
+2026-10-01T12:07:00Z node-02 dcgm[1042]: [INFO] GPU-08: Telemetry normal. T=64.5C, P=430.1W, Util=66.1%, Freq=1716MHz
+2026-10-01T12:07:00Z node-03 dcgm[1042]: [INFO] GPU-09: Telemetry normal. T=63.3C, P=388.6W, Util=64.7%, Freq=1756MHz
+2026-10-01T12:07:00Z node-03 dcgm[1042]: [INFO] GPU-10: Telemetry normal. T=63.7C, P=435.6W, Util=71.8%, Freq=1827MHz
+2026-10-01T12:07:00Z node-03 slurm_node[890]: [INFO] GPU-11: Workload low activity (18.0%). Clock lock at 1900MHz. Inefficient power state.
+2026-10-01T12:07:00Z node-03 dcgm[1042]: [WARN] GPU-12: Sensor thermistor #0 reported 150.0C while draw is 10.0W. Physical check required.
+2026-10-01T12:07:00Z node-04 kernel: [ERR] GPU-13: Null pointer or parity mismatch in PCIe NVLINK telemetry buffer. PWR=-45.0W, UTIL=108.0%
+2026-10-01T12:07:00Z node-04 dcgm[1042]: [ALERT] GPU-14: Thermal junction limit approaching (92.5C > 85.0C). High draw: 745.0W. Throttling flag set.
+2026-10-01T12:07:00Z node-04 dcgm[1042]: [INFO] GPU-15: Telemetry normal. T=61.2C, P=431.1W, Util=75.8%, Freq=1705MHz
+2026-10-01T12:07:00Z node-04 dcgm[1042]: [INFO] GPU-16: Telemetry normal. T=60.2C, P=351.9W, Util=63.7%, Freq=1777MHz
+2026-10-01T12:08:00Z node-01 dcgm[1042]: [INFO] GPU-01: Telemetry normal. T=63.0C, P=359.3W, Util=74.7%, Freq=1762MHz
+2026-10-01T12:08:00Z node-01 dcgm[1042]: [INFO] GPU-02: Telemetry normal. T=65.1C, P=366.3W, Util=72.8%, Freq=1757MHz
+2026-10-01T12:08:00Z node-01 dcgm[1042]: [INFO] GPU-03: Telemetry normal. T=59.7C, P=346.9W, Util=78.5%, Freq=1788MHz
+2026-10-01T12:08:00Z node-01 slurm_node[890]: [INFO] GPU-04: Workload low activity (14.0%). Clock lock at 1950MHz. Inefficient power state.
+2026-10-01T12:08:00Z node-02 dcgm[1042]: [INFO] GPU-05: Telemetry normal. T=60.5C, P=437.0W, Util=68.6%, Freq=1809MHz
+2026-10-01T12:08:00Z node-02 dcgm[1042]: [INFO] GPU-06: Telemetry normal. T=66.3C, P=435.9W, Util=75.9%, Freq=1785MHz
+2026-10-01T12:08:00Z node-02 dcgm[1042]: [ALERT] GPU-07: Thermal junction limit approaching (89.0C > 85.0C). High draw: 720.0W. Throttling flag set.
+2026-10-01T12:08:00Z node-02 dcgm[1042]: [INFO] GPU-08: Telemetry normal. T=64.1C, P=377.3W, Util=66.5%, Freq=1768MHz
+2026-10-01T12:08:00Z node-03 dcgm[1042]: [INFO] GPU-09: Telemetry normal. T=62.5C, P=438.3W, Util=66.0%, Freq=1813MHz
+2026-10-01T12:08:00Z node-03 dcgm[1042]: [INFO] GPU-10: Telemetry normal. T=64.5C, P=380.6W, Util=67.4%, Freq=1753MHz
+2026-10-01T12:08:00Z node-03 slurm_node[890]: [INFO] GPU-11: Workload low activity (18.0%). Clock lock at 1900MHz. Inefficient power state.
+2026-10-01T12:08:00Z node-03 dcgm[1042]: [WARN] GPU-12: Sensor thermistor #0 reported 150.0C while draw is 10.0W. Physical check required.
+2026-10-01T12:08:00Z node-04 kernel: [ERR] GPU-13: Null pointer or parity mismatch in PCIe NVLINK telemetry buffer. PWR=-45.0W, UTIL=108.0%
+2026-10-01T12:08:00Z node-04 dcgm[1042]: [ALERT] GPU-14: Thermal junction limit approaching (92.5C > 85.0C). High draw: 745.0W. Throttling flag set.
+2026-10-01T12:08:00Z node-04 dcgm[1042]: [INFO] GPU-15: Telemetry normal. T=60.0C, P=405.1W, Util=79.8%, Freq=1730MHz
+2026-10-01T12:08:00Z node-04 dcgm[1042]: [INFO] GPU-16: Telemetry normal. T=64.0C, P=436.3W, Util=71.9%, Freq=1832MHz
+2026-10-01T12:09:00Z node-01 dcgm[1042]: [INFO] GPU-01: Telemetry normal. T=60.9C, P=385.2W, Util=65.2%, Freq=1759MHz
+2026-10-01T12:09:00Z node-01 dcgm[1042]: [INFO] GPU-02: Telemetry normal. T=61.0C, P=425.4W, Util=73.0%, Freq=1818MHz
+2026-10-01T12:09:00Z node-01 dcgm[1042]: [INFO] GPU-03: Telemetry normal. T=63.4C, P=399.2W, Util=73.7%, Freq=1792MHz
+2026-10-01T12:09:00Z node-01 slurm_node[890]: [INFO] GPU-04: Workload low activity (14.0%). Clock lock at 1950MHz. Inefficient power state.
+2026-10-01T12:09:00Z node-02 dcgm[1042]: [INFO] GPU-05: Telemetry normal. T=61.2C, P=406.7W, Util=62.2%, Freq=1729MHz
+2026-10-01T12:09:00Z node-02 dcgm[1042]: [INFO] GPU-06: Telemetry normal. T=61.1C, P=382.6W, Util=78.3%, Freq=1745MHz
+2026-10-01T12:09:00Z node-02 dcgm[1042]: [ALERT] GPU-07: Thermal junction limit approaching (89.0C > 85.0C). High draw: 720.0W. Throttling flag set.
+2026-10-01T12:09:00Z node-02 dcgm[1042]: [INFO] GPU-08: Telemetry normal. T=61.4C, P=379.4W, Util=77.9%, Freq=1749MHz
+2026-10-01T12:09:00Z node-03 dcgm[1042]: [INFO] GPU-09: Telemetry normal. T=59.2C, P=435.2W, Util=65.4%, Freq=1703MHz
+2026-10-01T12:09:00Z node-03 dcgm[1042]: [INFO] GPU-10: Telemetry normal. T=66.9C, P=420.7W, Util=78.5%, Freq=1727MHz
+2026-10-01T12:09:00Z node-03 slurm_node[890]: [INFO] GPU-11: Workload low activity (18.0%). Clock lock at 1900MHz. Inefficient power state.
+2026-10-01T12:09:00Z node-03 dcgm[1042]: [WARN] GPU-12: Sensor thermistor #0 reported 150.0C while draw is 10.0W. Physical check required.
+2026-10-01T12:09:00Z node-04 kernel: [ERR] GPU-13: Null pointer or parity mismatch in PCIe NVLINK telemetry buffer. PWR=-45.0W, UTIL=108.0%
+2026-10-01T12:09:00Z node-04 dcgm[1042]: [ALERT] GPU-14: Thermal junction limit approaching (92.5C > 85.0C). High draw: 745.0W. Throttling flag set.
+2026-10-01T12:09:00Z node-04 dcgm[1042]: [INFO] GPU-15: Telemetry normal. T=66.9C, P=381.1W, Util=62.3%, Freq=1811MHz
+2026-10-01T12:09:00Z node-04 dcgm[1042]: [INFO] GPU-16: Telemetry normal. T=66.3C, P=437.6W, Util=69.4%, Freq=1824MHz
