@@ -12,7 +12,7 @@ Verifica:
 """
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 
 @dataclass
@@ -50,73 +50,88 @@ class DataQualityAuditor:
     FREQ_MIN = 200
     FREQ_MAX = 2800
 
+    # Etiquetas legibles para los campos numéricos auditados (DRY: una sola definición).
+    _FIELD_LABELS = {
+        "temperature": "Temperatura",
+        "power_w": "Potencia eléctrica",
+        "utilization": "Utilización",
+        "frequency": "Frecuencia de reloj",
+    }
+
+    @classmethod
+    def _null_issue(cls, gpu_id: Any, field_name: str) -> str:
+        """Mensaje canónico para un campo numérico nulo."""
+        label = cls._FIELD_LABELS[field_name]
+        return f"{gpu_id}: {label} es nula (None/NaN)"
+
+    @classmethod
+    def _range_issue(
+        cls, gpu_id: Any, field_name: str, value: float, vmin: float, vmax: float, unit: str
+    ) -> Optional[str]:
+        """Devuelve el problema de rango físico si el valor está fuera de [vmin, vmax]."""
+        if vmin <= value <= vmax:
+            return None
+        label = cls._FIELD_LABELS[field_name]
+        decimals = 0 if field_name == "frequency" else 1
+        return (
+            f"{gpu_id}: {label} {value:.{decimals}f} {unit} fuera de rango admisible "
+            f"[{vmin}, {vmax}] {unit}"
+        )
+
     @classmethod
     def audit_record(cls, record: Dict[str, Any]) -> QualityResult:
         """
         Audita un registro individual de telemetría proveniente del sensor.
+
+        Capas de verificación:
+        1. Campos obligatorios presentes.
+        2. Valores no nulos.
+        3. Conversión tipada de los valores numéricos.
+        4. Límites físicos admisibles por variable.
+        5. Inconsistencias lógicas entre variables cruzadas.
         """
         issues: List[str] = []
 
         # 1. Verificación de campos obligatorios presentes
-        for req_field in cls.MANDATORY_FIELDS:
-            if req_field not in record:
-                issues.append(f"Campo obligatorio faltante: '{req_field}'")
-
-        if issues:
+        missing_fields = [f for f in cls.MANDATORY_FIELDS if f not in record]
+        if missing_fields:
+            issues = [f"Campo obligatorio faltante: '{f}'" for f in missing_fields]
             return QualityResult(is_valid=False, issues=issues, cleaned_record=None)
 
         gpu_id = record.get("gpu_id")
-        temp = record.get("temperature")
-        power = record.get("power_w")
-        util = record.get("utilization")
-        freq = record.get("frequency")
 
         # 2. Detección de valores nulos o None
-        if temp is None:
-            issues.append(f"{gpu_id}: Temperatura es nula (None/NaN)")
-        if power is None:
-            issues.append(f"{gpu_id}: Potencia eléctrica es nula (None/NaN)")
-        if util is None:
-            issues.append(f"{gpu_id}: Utilización es nula (None/NaN)")
-        if freq is None:
-            issues.append(f"{gpu_id}: Frecuencia de reloj es nula (None/NaN)")
-
-        if issues:
-            return QualityResult(is_valid=False, issues=issues, cleaned_record=None)
+        numeric_fields = ("temperature", "power_w", "utilization", "frequency")
+        null_issues = [
+            cls._null_issue(gpu_id, field_name)
+            for field_name in numeric_fields
+            if record.get(field_name) is None
+        ]
+        if null_issues:
+            return QualityResult(is_valid=False, issues=null_issues, cleaned_record=None)
 
         # 3. Conversión de tipos y validación de rangos numéricos
         try:
-            temp_val = float(temp)
-            power_val = float(power)
-            util_val = float(util)
-            freq_val = float(freq)
+            values = {field_name: float(record[field_name]) for field_name in numeric_fields}
         except (ValueError, TypeError) as e:
             issues.append(f"{gpu_id}: Error de tipo en datos numéricos ({e})")
             return QualityResult(is_valid=False, issues=issues, cleaned_record=None)
 
         # 4. Verificación de límites físicos
-        if not (cls.TEMP_MIN <= temp_val <= cls.TEMP_MAX):
-            issues.append(
-                f"{gpu_id}: Temperatura {temp_val:.1f} °C fuera de rango admisible [{cls.TEMP_MIN}, {cls.TEMP_MAX}] °C"
-            )
-
-        if not (cls.POWER_MIN <= power_val <= cls.POWER_MAX):
-            issues.append(
-                f"{gpu_id}: Potencia {power_val:.1f} W fuera de rango admisible [{cls.POWER_MIN}, {cls.POWER_MAX}] W"
-            )
-
-        if not (cls.UTIL_MIN <= util_val <= cls.UTIL_MAX):
-            issues.append(
-                f"{gpu_id}: Utilización {util_val:.1f}% fuera de rango admisible [{cls.UTIL_MIN}, {cls.UTIL_MAX}]%"
-            )
-
-        if not (cls.FREQ_MIN <= freq_val <= cls.FREQ_MAX):
-            issues.append(
-                f"{gpu_id}: Frecuencia {freq_val:.0f} MHz fuera de rango admisible [{cls.FREQ_MIN}, {cls.FREQ_MAX}] MHz"
-            )
+        physical_limits = [
+            ("temperature", cls.TEMP_MIN, cls.TEMP_MAX, "°C"),
+            ("power_w", cls.POWER_MIN, cls.POWER_MAX, "W"),
+            ("utilization", cls.UTIL_MIN, cls.UTIL_MAX, "%"),
+            ("frequency", cls.FREQ_MIN, cls.FREQ_MAX, "MHz"),
+        ]
+        for field_name, vmin, vmax, unit in physical_limits:
+            issue = cls._range_issue(gpu_id, field_name, values[field_name], vmin, vmax, unit)
+            if issue:
+                issues.append(issue)
 
         # 5. Detección de inconsistencias lógicas entre variables cruzadas
         # Ejemplo: Temperatura extrema (>95°C) con disipación de potencia casi nula (<40W) y utilización 0%
+        temp_val, power_val, util_val = values["temperature"], values["power_w"], values["utilization"]
         if temp_val > 95.0 and power_val < 40.0 and util_val == 0.0:
             issues.append(
                 f"{gpu_id}: Inconsistencia física: Temp extrema ({temp_val:.1f} °C) sin consumo eléctrico ({power_val:.1f} W). Posible falla de termistor o bus I2C."

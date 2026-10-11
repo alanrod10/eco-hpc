@@ -11,11 +11,11 @@ import os
 import pandas as pd
 import streamlit as st
 
-from agent import EcoHpcAgent, AgentDecision
+from agent import EcoHpcAgent
 from data_quality import DataQualityAuditor
 from mapreduce_demo import execute_mapreduce
-from rules import AgentAction, AgentState, RuleThresholds
-from simulator import generate_baseline_telemetry, generate_historical_batch, export_datasets
+from simulator import export_datasets
+import ui_components as ui
 
 
 # ==============================================================================
@@ -28,151 +28,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Estilos CSS profesionales - TEMA CLARO Y ALTO CONTRASTE PARA PROYECTOR
-st.markdown(
-    """
-    <style>
-    /* Tipografía y jerarquía de alto contraste */
-    html, body, [class*="css"] {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        color: #0f172a;
-    }
-    .main-title {
-        font-size: 2.3rem;
-        font-weight: 800;
-        color: #0f172a;
-        margin-bottom: 0.2rem;
-        letter-spacing: -0.02em;
-    }
-    .sub-title {
-        font-size: 1.15rem;
-        color: #334155;
-        margin-bottom: 1.4rem;
-        font-weight: 500;
-    }
-    .section-header {
-        font-size: 1.45rem;
-        font-weight: 700;
-        color: #0f4c81;
-        margin-top: 1.2rem;
-        margin-bottom: 0.6rem;
-    }
-    .badge-simulated {
-        background-color: #f1f5f9;
-        color: #1e293b;
-        font-size: 0.85rem;
-        padding: 0.3rem 0.6rem;
-        border-radius: 6px;
-        border: 2px solid #94a3b8;
-        font-weight: 700;
-        display: inline-block;
-    }
-    .badge-step {
-        background-color: #0f4c81;
-        color: #ffffff;
-        font-size: 0.9rem;
-        font-weight: 700;
-        padding: 0.25rem 0.6rem;
-        border-radius: 4px;
-        display: inline-block;
-        margin-bottom: 0.4rem;
-    }
-
-    /* Tarjetas de Métricas optimizadas para Proyector */
-    .stMetric {
-        background-color: #ffffff !important;
-        border: 2px solid #cbd5e1 !important;
-        border-radius: 10px !important;
-        padding: 14px 18px !important;
-        box-shadow: 0 2px 4px rgba(15, 23, 42, 0.05) !important;
-    }
-    .stMetric label {
-        font-size: 1.05rem !important;
-        font-weight: 700 !important;
-        color: #334155 !important;
-    }
-    .stMetric [data-testid="stMetricValue"] {
-        font-size: 2.2rem !important;
-        font-weight: 800 !important;
-        color: #0f172a !important;
-    }
-
-    /* Cajas de Decisión Semánticas con Alto Contraste */
-    .decision-card {
-        border-radius: 8px;
-        padding: 1.2rem 1.4rem;
-        margin-bottom: 1rem;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.04);
-        font-size: 1.05rem;
-        line-height: 1.5;
-    }
-    .decision-card h3 {
-        margin-top: 0;
-        font-size: 1.4rem;
-        font-weight: 800;
-        margin-bottom: 0.6rem;
-    }
-    .decision-box-normal {
-        border: 2px solid #86efac;
-        border-left: 10px solid #16a34a;
-        background-color: #f0fdf4;
-        color: #14532d;
-    }
-    .decision-box-ahorro {
-        border: 2px solid #fde68a;
-        border-left: 10px solid #d97706;
-        background-color: #fffbeb;
-        color: #78350f;
-    }
-    .decision-box-proteccion {
-        border: 2px solid #fca5a5;
-        border-left: 10px solid #dc2626;
-        background-color: #fef2f2;
-        color: #7f1d1d;
-    }
-    .decision-box-anomalia {
-        border: 2px solid #d8b4fe;
-        border-left: 10px solid #9333ea;
-        background-color: #faf5ff;
-        color: #581c87;
-    }
-
-    /* Flujo visual del agente */
-    .flow-box {
-        background-color: #ffffff;
-        border: 2px solid #cbd5e1;
-        border-radius: 8px;
-        padding: 1rem;
-        margin-bottom: 0.8rem;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-    }
-    .flow-box h4 {
-        margin-top: 0;
-        color: #0f4c81;
-        font-weight: 700;
-        font-size: 1.15rem;
-    }
-
-    /* Cajas pedagógicas PEAS */
-    .peas-card {
-        background-color: #ffffff;
-        border: 2px solid #e2e8f0;
-        border-top: 6px solid #0f4c81;
-        border-radius: 8px;
-        padding: 1.2rem;
-        margin-bottom: 1rem;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-    }
-    .peas-card h3 {
-        color: #0f4c81;
-        font-weight: 800;
-        margin-top: 0;
-        margin-bottom: 0.5rem;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+ui.apply_styles()
 
 
 # ==============================================================================
@@ -339,105 +195,90 @@ elif menu_option == "2. Demostración":
 
     st.markdown("---")
 
-    if "01" in demo_step:
-        st.markdown("<span class='badge-step'>01 — NORMAL</span> <span class='section-header'>Operación Normal: El sistema está estable</span>", unsafe_allow_html=True)
-        st.markdown(
-            "**Explicación breve:** Las condiciones térmicas y eléctricas operan dentro de la envolvente de diseño. El agente valida los datos y decide mantener la operación."
-        )
-        sample = next((d for d in current_decisions if d.gpu_id == "GPU-01"), current_decisions[0])
+    # Configuración declarativa de los pasos 01-04 (los 4 escenarios canónicos).
+    # Cada paso define: GPU de muestra, encabezado, explicación y deltas de métricas.
+    demo_scenarios = {
+        "01": dict(
+            gpu_id="GPU-01",
+            badge="01 — NORMAL",
+            header="Operación Normal: El sistema está estable",
+            explanation=(
+                "**Explicación breve:** Las condiciones térmicas y eléctricas operan dentro de "
+                "la envolvente de diseño. El agente valida los datos y decide mantener la operación."
+            ),
+            metrics=[
+                ("GPU Evaluada", "{gpu_id}", None, None),
+                ("Temperatura", "{temperature} °C", None, None),
+                ("Potencia Eléctrica", "{power_w} W", None, None),
+                ("Utilización de Cómputo", "{utilization} %", None, None),
+            ],
+        ),
+        "02": dict(
+            gpu_id="GPU-04",
+            badge="02 — AHORRO",
+            header="Ahorro: Detección de ineficiencia energética",
+            explanation=(
+                "**Explicación breve:** La GPU disipa 380 W pero su uso es de solo 14% (espera de I/O). "
+                "El agente detecta la ineficiencia y modula el reloj por DVFS para ahorrar ~152 W."
+            ),
+            metrics=[
+                ("GPU Evaluada", "{gpu_id}", None, None),
+                ("Temperatura", "{temperature} °C", "-12 °C (Segura)", None),
+                ("Potencia Eléctrica", "{power_w} W", "Elevada para carga baja", "inverse"),
+                ("Utilización de Cómputo", "{utilization} %", "14% (Subutilizada)", "inverse"),
+            ],
+        ),
+        "03": dict(
+            gpu_id="GPU-07",
+            badge="03 — PROTECCIÓN",
+            header="Protección: La temperatura supera el umbral configurado",
+            explanation=(
+                "**Explicación breve:** Durante entrenamiento intensivo, la temperatura alcanza 89 °C "
+                "superando el umbral preventivo configurado para la simulación (85 °C). "
+                "El agente activa protección inmediata."
+            ),
+            metrics=[
+                ("GPU Evaluada", "{gpu_id}", None, None),
+                ("Temperatura", "{temperature} °C", ">= 85 °C (Alerta)", "inverse"),
+                ("Potencia Eléctrica", "{power_w} W", "Pico Extremo (720 W)", "inverse"),
+                ("Utilización de Cómputo", "{utilization} %", "97% (Saturación)", None),
+            ],
+        ),
+        "04": dict(
+            gpu_id="GPU-12",
+            badge="04 — ANOMALÍA",
+            header="Anomalía: Detección de fallo sensorial de veracidad",
+            explanation=(
+                "**Explicación breve:** El sensor reporta 150 °C con solo 10 W de potencia. "
+                "Una percepción no es una orden: el filtro de veracidad aísla la contradicción "
+                "y marca DATOS NO CONFIABLES."
+            ),
+            metrics=[
+                ("GPU Evaluada", "{gpu_id}", None, None),
+                ("Temperatura", "{temperature} °C", "Anomalía (150 °C)", "inverse"),
+                ("Potencia Eléctrica", "{power_w} W", "10 W (Inconsistente)", "inverse"),
+                ("Utilización", "{utilization} %", None, None),
+            ],
+        ),
+    }
+
+    step_key = demo_step.split(" ")[0]
+
+    if step_key in demo_scenarios:
+        scenario = demo_scenarios[step_key]
+        ui.render_step_header(scenario["badge"], scenario["header"])
+        st.markdown(scenario["explanation"])
+
+        sample = ui.select_sample_decision(current_decisions, scenario["gpu_id"])
+
         col1, col2, col3 = st.columns([1, 1, 2])
-        col1.metric("GPU Evaluada", sample.gpu_id)
-        col1.metric("Temperatura", f"{sample.perceptions['temperature']} °C")
-        col2.metric("Potencia Eléctrica", f"{sample.perceptions['power_w']} W")
-        col2.metric("Utilización de Cómputo", f"{sample.perceptions['utilization']} %")
+        columns = [col1, col1, col2, col2]
+        values = {"gpu_id": sample.gpu_id, **sample.perceptions}
+        for col, (label, value_fmt, delta, delta_color) in zip(columns, scenario["metrics"]):
+            col.metric(label, value_fmt.format(**values), delta=delta, delta_color=delta_color)
 
         with col3:
-            st.markdown(
-                f"""
-                <div class='decision-card decision-box-normal'>
-                    <h3>ESTADO: {sample.state.value}</h3>
-                    <p><b>DECISIÓN:</b> {sample.action.value}</p>
-                    <p><b>ACCIÓN SIMULADA:</b> {sample.action_details}</p>
-                    <p><b>MOTIVO:</b> {sample.reason}</p>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-
-    elif "02" in demo_step:
-        st.markdown("<span class='badge-step'>02 — AHORRO</span> <span class='section-header'>Ahorro: Detección de ineficiencia energética</span>", unsafe_allow_html=True)
-        st.markdown(
-            "**Explicación breve:** La GPU disipa 380 W pero su uso es de solo 14% (espera de I/O). El agente detecta la ineficiencia y modula el reloj por DVFS para ahorrar ~152 W."
-        )
-        sample = next((d for d in current_decisions if d.gpu_id == "GPU-04"), current_decisions[0])
-        col1, col2, col3 = st.columns([1, 1, 2])
-        col1.metric("GPU Evaluada", sample.gpu_id)
-        col1.metric("Temperatura", f"{sample.perceptions['temperature']} °C", delta="-12 °C (Segura)")
-        col2.metric("Potencia Eléctrica", f"{sample.perceptions['power_w']} W", delta="Elevada para carga baja", delta_color="inverse")
-        col2.metric("Utilización de Cómputo", f"{sample.perceptions['utilization']} %", delta="14% (Subutilizada)", delta_color="inverse")
-
-        with col3:
-            st.markdown(
-                f"""
-                <div class='decision-card decision-box-ahorro'>
-                    <h3>ESTADO: {sample.state.value}</h3>
-                    <p><b>DECISIÓN:</b> {sample.action.value}</p>
-                    <p><b>ACCIÓN SIMULADA:</b> {sample.action_details}</p>
-                    <p><b>MOTIVO:</b> {sample.reason}</p>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-
-    elif "03" in demo_step:
-        st.markdown("<span class='badge-step'>03 — PROTECCIÓN</span> <span class='section-header'>Protección: La temperatura supera el umbral configurado</span>", unsafe_allow_html=True)
-        st.markdown(
-            "**Explicación breve:** Durante entrenamiento intensivo, la temperatura alcanza 89 °C superando el umbral preventivo configurado para la simulación (85 °C). El agente activa protección inmediata."
-        )
-        sample = next((d for d in current_decisions if d.gpu_id == "GPU-07"), current_decisions[0])
-        col1, col2, col3 = st.columns([1, 1, 2])
-        col1.metric("GPU Evaluada", sample.gpu_id)
-        col1.metric("Temperatura", f"{sample.perceptions['temperature']} °C", delta=">= 85 °C (Alerta)", delta_color="inverse")
-        col2.metric("Potencia Eléctrica", f"{sample.perceptions['power_w']} W", delta="Pico Extremo (720 W)", delta_color="inverse")
-        col2.metric("Utilización de Cómputo", f"{sample.perceptions['utilization']} %", delta="97% (Saturación)")
-
-        with col3:
-            st.markdown(
-                f"""
-                <div class='decision-card decision-box-proteccion'>
-                    <h3>ESTADO: {sample.state.value}</h3>
-                    <p><b>DECISIÓN:</b> {sample.action.value}</p>
-                    <p><b>ACCIÓN SIMULADA:</b> {sample.action_details}</p>
-                    <p><b>MOTIVO:</b> {sample.reason}</p>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-
-    elif "04" in demo_step:
-        st.markdown("<span class='badge-step'>04 — ANOMALÍA</span> <span class='section-header'>Anomalía: Detección de fallo sensorial de veracidad</span>", unsafe_allow_html=True)
-        st.markdown(
-            "**Explicación breve:** El sensor reporta 150 °C con solo 10 W de potencia. Una percepción no es una orden: el filtro de veracidad aísla la contradicción y marca DATOS NO CONFIABLES."
-        )
-        sample = next((d for d in current_decisions if d.gpu_id == "GPU-12"), current_decisions[0])
-        col1, col2, col3 = st.columns([1, 1, 2])
-        col1.metric("GPU Evaluada", sample.gpu_id)
-        col1.metric("Temperatura", f"{sample.perceptions['temperature']} °C", delta="Anomalía (150 °C)", delta_color="inverse")
-        col2.metric("Potencia Eléctrica", f"{sample.perceptions['power_w']} W", delta="10 W (Inconsistente)", delta_color="inverse")
-        col2.metric("Utilización", f"{sample.perceptions['utilization']} %")
-
-        with col3:
-            st.markdown(
-                f"""
-                <div class='decision-card decision-box-anomalia'>
-                    <h3>ESTADO: {sample.state.value}</h3>
-                    <p><b>DECISIÓN:</b> {sample.action.value}</p>
-                    <p><b>ACCIÓN SIMULADA:</b> {sample.action_details}</p>
-                    <p><b>MOTIVO:</b> {sample.reason}</p>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
+            ui.render_decision_card(sample)
 
     elif "05" in demo_step:
         st.markdown("<span class='badge-step'>05 — MAPREDUCE</span> <span class='section-header'>Análisis Histórico: Agregación Batch con MapReduce</span>", unsafe_allow_html=True)

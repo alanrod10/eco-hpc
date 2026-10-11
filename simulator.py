@@ -27,6 +27,73 @@ GPU_CLUSTER_CONFIG = [
 DEFAULT_SEED = 42
 
 
+def _build_record(
+    cfg: Dict[str, str],
+    timestamp: str,
+    temperature: Optional[float],
+    power_w: float,
+    utilization: float,
+    frequency: int,
+    cooling: float,
+    job_status: str,
+    scenario_tag: str,
+) -> Dict:
+    """
+    Construye un registro de telemetría con esquema uniforme para todos los
+    escenarios (DRY: una sola definición de las claves del dataset).
+    La eficiencia GFLOPS/W se deriva de utilización y potencia cuando es posible.
+    """
+    efficiency = (
+        round(utilization * 15.0 / power_w, 2)
+        if power_w > 0 and utilization is not None
+        else 0.0
+    )
+    return {
+        "timestamp": timestamp,
+        "gpu_id": cfg["gpu_id"],
+        "node": cfg["node"],
+        "model": cfg["model"],
+        "temperature": temperature,
+        "power_w": power_w,
+        "utilization": utilization,
+        "frequency": frequency,
+        "cooling": cooling,
+        "job_status": job_status,
+        "energy_efficiency_gflops_w": efficiency,
+        "scenario_tag": scenario_tag,
+    }
+
+
+# Escenarios canónicos por GPU: cubren deliberadamente los 4 estados del TP.
+# Cada valor define las métricas del escenario; cooling y job_status se aplican
+# al construir el registro (los escenarios de anomalía incluyen los propios).
+_ANOMALY_SCENARIOS = {
+    # Lectura físicamente contradictoria (temp extrema con consumo casi nulo)
+    "GPU-12": dict(temperature=150.0, power_w=10.0, utilization=0.0, frequency=1200,
+                   cooling=0.0, job_status="ANOMALOUS_SENSOR"),
+    # Lectura con valor nulo / potencia negativa / utilización > 100%
+    "GPU-13": dict(temperature=None, power_w=-45.0, utilization=108.0, frequency=1400,
+                   cooling=50.0, job_status="CORRUPTED_STREAM"),
+}
+
+_PROTECTION_SCENARIOS = {
+    # Alta temperatura (>85°C), alto consumo (>700W), altísima utilización
+    "GPU-07": dict(temperature=89.0, power_w=720.0, utilization=97.0, frequency=2100),
+    "GPU-14": dict(temperature=92.5, power_w=745.0, utilization=99.0, frequency=2150),
+}
+
+_SAVING_SCENARIOS = {
+    # Potencia y frecuencia elevadas para una utilización muy baja (GPU subutilizada/idle)
+    "GPU-04": dict(temperature=58.0, power_w=380.0, utilization=14.0, frequency=1950),
+    "GPU-11": dict(temperature=55.0, power_w=360.0, utilization=18.0, frequency=1900),
+}
+
+
+def _scenario_values(scenario: Dict) -> Dict:
+    """Copia segura de los valores de un escenario (nunca muta el módulo)."""
+    return dict(scenario)
+
+
 def generate_baseline_telemetry(
     timestamp: Optional[str] = None, seed: Optional[int] = DEFAULT_SEED
 ) -> List[Dict]:
@@ -48,109 +115,35 @@ def generate_baseline_telemetry(
 
     for cfg in GPU_CLUSTER_CONFIG:
         gpu_id = cfg["gpu_id"]
-        node = cfg["node"]
-        model = cfg["model"]
 
-        # Escenario Canónico 1: ANOMALÍAS CONTROLADAS DE VERACIDAD
-        if gpu_id == "GPU-12":
-            # Lectura físicamente contradictoria (temp extrema con consumo casi nulo)
-            record = {
-                "timestamp": timestamp,
-                "gpu_id": gpu_id,
-                "node": node,
-                "model": model,
-                "temperature": 150.0,
-                "power_w": 10.0,
-                "utilization": 0.0,
-                "frequency": 1200,
-                "cooling": 0.0,
-                "job_status": "ANOMALOUS_SENSOR",
-                "energy_efficiency_gflops_w": 0.0,
-                "scenario_tag": "ANOMALIA",
-            }
-        elif gpu_id == "GPU-13":
-            # Lectura con valor nulo / potencia negativa / utilización > 100%
-            record = {
-                "timestamp": timestamp,
-                "gpu_id": gpu_id,
-                "node": node,
-                "model": model,
-                "temperature": None,
-                "power_w": -45.0,
-                "utilization": 108.0,
-                "frequency": 1400,
-                "cooling": 50.0,
-                "job_status": "CORRUPTED_STREAM",
-                "energy_efficiency_gflops_w": 0.0,
-                "scenario_tag": "ANOMALIA",
-            }
-
-        # Escenario Canónico 2: PROTECCIÓN TÉRMICA Y ENERGÉTICA
-        elif gpu_id in ("GPU-07", "GPU-14"):
-            # Alta temperatura (>85°C), alto consumo (>700W), altísima utilización
-            temp = 89.0 if gpu_id == "GPU-07" else 92.5
-            pwr = 720.0 if gpu_id == "GPU-07" else 745.0
-            util = 97.0 if gpu_id == "GPU-07" else 99.0
-            freq = 2100 if gpu_id == "GPU-07" else 2150
-            record = {
-                "timestamp": timestamp,
-                "gpu_id": gpu_id,
-                "node": node,
-                "model": model,
-                "temperature": temp,
-                "power_w": pwr,
-                "utilization": util,
-                "frequency": freq,
-                "cooling": 95.0,
-                "job_status": "TRAINING_AI_LLM",
-                "energy_efficiency_gflops_w": round(util * 15.0 / pwr, 2),
-                "scenario_tag": "PROTECCION",
-            }
-
-        # Escenario Canónico 3: OPORTUNIDAD DE AHORRO ENERGÉTICO (ENERGY SAVING)
-        elif gpu_id in ("GPU-04", "GPU-11"):
-            # Potencia y frecuencia elevadas para una utilización muy baja (GPU subutilizada/idle)
-            temp = 58.0 if gpu_id == "GPU-04" else 55.0
-            pwr = 380.0 if gpu_id == "GPU-04" else 360.0
-            util = 14.0 if gpu_id == "GPU-04" else 18.0
-            freq = 1950 if gpu_id == "GPU-04" else 1900
-            record = {
-                "timestamp": timestamp,
-                "gpu_id": gpu_id,
-                "node": node,
-                "model": model,
-                "temperature": temp,
-                "power_w": pwr,
-                "utilization": util,
-                "frequency": freq,
-                "cooling": 42.0,
-                "job_status": "IDLE_STALLED",
-                "energy_efficiency_gflops_w": round(util * 15.0 / pwr, 2),
-                "scenario_tag": "AHORRO",
-            }
-
-        # Escenario Canónico 4: OPERACIÓN NORMAL
+        if gpu_id in _ANOMALY_SCENARIOS:
+            # Escenario Canónico 1: ANOMALÍAS CONTROLADAS DE VERACIDAD
+            record = _build_record(cfg, timestamp, scenario_tag="ANOMALIA",
+                                   **_scenario_values(_ANOMALY_SCENARIOS[gpu_id]))
+        elif gpu_id in _PROTECTION_SCENARIOS:
+            # Escenario Canónico 2: PROTECCIÓN TÉRMICA Y ENERGÉTICA
+            record = _build_record(cfg, timestamp, cooling=95.0, job_status="TRAINING_AI_LLM",
+                                   scenario_tag="PROTECCION",
+                                   **_scenario_values(_PROTECTION_SCENARIOS[gpu_id]))
+        elif gpu_id in _SAVING_SCENARIOS:
+            # Escenario Canónico 3: OPORTUNIDAD DE AHORRO ENERGÉTICO (ENERGY SAVING)
+            record = _build_record(cfg, timestamp, cooling=42.0, job_status="IDLE_STALLED",
+                                   scenario_tag="AHORRO",
+                                   **_scenario_values(_SAVING_SCENARIOS[gpu_id]))
         else:
+            # Escenario Canónico 4: OPERACIÓN NORMAL
             # Rango seguro de operación: temp 58-68°C, pwr 320-450W, util 60-80%
-            temp = round(random.uniform(59.0, 67.0), 1)
-            pwr = round(random.uniform(330.0, 440.0), 1)
-            util = round(random.uniform(62.0, 82.0), 1)
-            freq = random.randint(1700, 1850)
-            cooling = round(random.uniform(48.0, 62.0), 1)
-            record = {
-                "timestamp": timestamp,
-                "gpu_id": gpu_id,
-                "node": node,
-                "model": model,
-                "temperature": temp,
-                "power_w": pwr,
-                "utilization": util,
-                "frequency": freq,
-                "cooling": cooling,
-                "job_status": "AI_INFERENCE_BATCH",
-                "energy_efficiency_gflops_w": round(util * 15.0 / pwr, 2),
-                "scenario_tag": "NORMAL",
-            }
+            record = _build_record(
+                cfg,
+                timestamp,
+                temperature=round(random.uniform(59.0, 67.0), 1),
+                power_w=round(random.uniform(330.0, 440.0), 1),
+                utilization=round(random.uniform(62.0, 82.0), 1),
+                frequency=random.randint(1700, 1850),
+                cooling=round(random.uniform(48.0, 62.0), 1),
+                job_status="AI_INFERENCE_BATCH",
+                scenario_tag="NORMAL",
+            )
 
         telemetry.append(record)
 

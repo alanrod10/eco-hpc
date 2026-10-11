@@ -14,7 +14,8 @@ Flujo de Operación Fundamental:
 SENSORES -> PERCEPCIONES -> CONTROL DE CALIDAD -> ESTADO INTERNO -> DECISIÓN -> ACCIÓN
 """
 
-from dataclasses import dataclass, field
+from collections import Counter
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
@@ -176,11 +177,16 @@ class EcoHpcAgent:
         """
         Procesa una ronda completa de telemetría para todas las GPUs del clúster.
         """
-        decisions = []
-        for item in telemetry_batch:
-            dec = self.perceive_and_decide(item)
-            decisions.append(dec)
-        return decisions
+        return [self.perceive_and_decide(item) for item in telemetry_batch]
+
+    @staticmethod
+    def _valid_numeric_values(decisions: List["AgentDecision"], field_name: str) -> List[float]:
+        """Extrae los valores numéricos válidos de un campo de percepción."""
+        return [
+            float(d.perceptions[field_name])
+            for d in decisions
+            if d.is_data_valid and d.perceptions.get(field_name) is not None
+        ]
 
     def get_cluster_summary(self, decisions: Optional[List[AgentDecision]] = None) -> Dict[str, Any]:
         """
@@ -199,30 +205,19 @@ class EcoHpcAgent:
                 "general_status": "SIN DATOS",
             }
 
-        valid_temps = [
-            float(d.perceptions["temperature"])
-            for d in target_decisions
-            if d.is_data_valid and d.perceptions.get("temperature") is not None
-        ]
-        valid_powers = [
-            float(d.perceptions["power_w"])
-            for d in target_decisions
-            if d.is_data_valid and d.perceptions.get("power_w") is not None
-        ]
-        valid_utils = [
-            float(d.perceptions["utilization"])
-            for d in target_decisions
-            if d.is_data_valid and d.perceptions.get("utilization") is not None
-        ]
+        valid_temps = self._valid_numeric_values(target_decisions, "temperature")
+        valid_powers = self._valid_numeric_values(target_decisions, "power_w")
+        valid_utils = self._valid_numeric_values(target_decisions, "utilization")
 
-        states_count = {s.value: 0 for s in AgentState}
-        actions_count = {a.value: 0 for a in AgentAction}
+        states_count = Counter(d.state.value for d in target_decisions)
+        actions_count = Counter(d.action.value for d in target_decisions)
+        # Asegurar que todos los estados/acciones aparezcan (con 0 si no ocurrieron).
+        for state in AgentState:
+            states_count.setdefault(state.value, 0)
+        for action in AgentAction:
+            actions_count.setdefault(action.value, 0)
 
-        for d in target_decisions:
-            states_count[d.state.value] = states_count.get(d.state.value, 0) + 1
-            actions_count[d.action.value] = actions_count.get(d.action.value, 0) + 1
-
-        # Diagnóstico del estado general del cluster
+        # Diagnóstico del estado general del cluster (prioridad: protección > veracidad > ahorro)
         if states_count[AgentState.PROTECCION.value] > 0:
             general_status = "ALERTA TÉRMICA / PROTECCIÓN ACTIVA"
         elif states_count[AgentState.DATOS_NO_CONFIABLES.value] > 0:
@@ -237,8 +232,8 @@ class EcoHpcAgent:
             "avg_temperature": round(sum(valid_temps) / len(valid_temps), 1) if valid_temps else 0.0,
             "total_power_w": round(sum(valid_powers), 1),
             "avg_utilization": round(sum(valid_utils) / len(valid_utils), 1) if valid_utils else 0.0,
-            "states_count": states_count,
-            "actions_count": actions_count,
+            "states_count": dict(states_count),
+            "actions_count": dict(actions_count),
             "general_status": general_status,
             "simulated_savings_kwh": round(self.simulated_savings_kwh, 3),
             "interventions_count": self.interventions_counter,
